@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block page_title %}Transmission Feed{% endblock %}
+
+{% block content %}
+<div class="card mb-10 border-l-4 border-primary p-8 relative overflow-hidden group">
+ <div
+ class="absolute -right-4 -top-4 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all pointer-events-none">
+ </div>
+ <div class="flex flex-wrap justify-between items-center gap-6 relative z-10">
+ <div class="flex gap-6 items-center">
+ <div
+ class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-[0_0_20px_rgba(0,123,255,0.2)] border border-primary/20 transition-all group-hover:scale-110">
+ <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+ </div>
+ <div>
+ <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">Live Sessions Feed</h3>
+ <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">Live
+ monitoring of active teaching sessions</p>
+ </div>
+ </div>
+ <a href="/start_session"
+ class="relative z-10 btn btn-primary h-16 px-10 rounded-2xl bg-gradient-to-br from-primary to-primary-dark border-none font-black shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all uppercase tracking-[0.2em] italic text-xs">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+ Start Session
+ </a>
+ </div>
+</div>
+
+<div class="card p-0 border border-border-glass bg-card-glass overflow-hidden group/table relative">
+ <div
+ class="absolute bottom-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover/table: transition-opacity pointer-events-none">
+ </div>
+
+ <div class="p-8 border-b border-border-glass flex flex-col sm:flex-row justify-between items-center bg-card-glass relative z-10 gap-6">
+ <div class="flex items-center gap-4">
+ <h4
+ class="text-[0.65rem] font-black m-0 flex items-center gap-3 uppercase tracking-[0.3em] text-text-main italic ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 text-primary"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+ Active Classes
+ </h4>
+  <div class="flex items-center gap-1">
+  <a href="?status=All&search={{ search }}" class="px-5 py-2 rounded-full text-[0.65rem] font-black uppercase tracking-widest transition-all {{ 'bg-primary text-bg-deep shadow-[0_0_15px_var(--primary)]' if status == 'All' else 'text-text-dim hover:text-white bg-white/5' }}">All Sessions</a>
+  <a href="?status=Active&search={{ search }}" class="px-5 py-2 rounded-full text-[0.65rem] font-black uppercase tracking-widest transition-all {{ 'bg-success text-bg-deep shadow-[0_0_15px_#00ff88]' if status == 'Active' else 'text-success bg-success/10 border border-success/20' }}">Live</a>
+  <a href="?status=Archived&search={{ search }}" class="px-5 py-2 rounded-full text-[0.65rem] font-black uppercase tracking-widest transition-all {{ 'bg-accent text-bg-deep shadow-[0_0_15px_#ff007f]' if status == 'Archived' else 'text-text-dim hover:text-white bg-white/5' }}">Archived</a>
+  </div>
+ </div>
+
+ <form action="" method="GET" class="flex items-center gap-3 w-full sm:w-auto">
+ <input type="hidden" name="status" value="{{ status }}">
+ <div class="relative w-full sm:w-64">
+ <input type="text" name="search" value="{{ search }}" placeholder="Search Identity or Topic..." 
+ class="w-full bg-black/40 border border-border-glass rounded-xl px-5 py-2.5 text-[0.7rem] font-bold text-text-main focus:border-primary/60 focus:outline-none transition-all italic">
+ <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-text-dim hover:text-primary transition-colors">
+ <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+ </button>
+ </div>
+ {% if search %}
+ <a href="?status={{ status }}" class="text-accent hover:text-white transition-colors">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+ </a>
+ {% endif %}
+ </form>
+ </div>
+
+ <div class="overflow-x-auto text-[0.6rem] sm:text-[0.7rem] relative z-10">
+ <table class="w-full text-left border-collapse">
+ <thead>
+ <tr class="bg-card-glass">
+ <th class="px-10 py-6 font-black text-text-dim uppercase tracking-[0.3em] italic ">
+ Teacher Name</th>
+ <th class="px-8 py-6 font-black text-text-dim uppercase tracking-[0.3em] italic ">Class Context</th>
+ <th class="px-8 py-6 font-black text-text-dim uppercase tracking-[0.3em] italic ">Lesson Topic</th>
+ <th
+ class="px-8 py-6 font-black text-text-dim uppercase tracking-[0.3em] italic text-center">
+ Start Time</th>
+ <th
+ class="px-8 py-6 font-black text-text-dim uppercase tracking-[0.3em] italic text-center">
+ End Time</th>
+ <th
+ class="px-10 py-6 font-black text-text-dim uppercase tracking-[0.3em] italic text-right">
+ Actions</th>
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-white/[0.03]">
+ {% for session in sessions %}
+ <tr class="hover:bg-primary/[0.03] transition-all group">
+ <td class="px-10 py-6">
+ <div class="flex items-center gap-4">
+ <div class="w-1.5 h-6 bg-primary/20 rounded-full group-hover:bg-primary transition-colors">
+ </div>
+ <span
+ class="font-black text-text-main italic uppercase tracking-wider text-sm group-hover:translate-x-1 transition-transform">{{
+ session[7] }}</span>
+ </div>
+ </td>
+ <td class="px-8 py-6">
+ <span
+ class="inline-flex items-center px-4 py-1.5 bg-card-glass border border-border-glass rounded-xl font-black uppercase tracking-[0.2em] italic text-text-dim ">
+ {{ session[2] }}
+ </span>
+ </td>
+ <td class="px-8 py-6">
+ <span
+ class="text-primary font-black uppercase tracking-widest text-[0.6rem] bg-primary/5 px-4 py-1.5 rounded-xl border border-primary/20 shadow-inner">
+ {{ session[5] }}
+ </span>
+ </td>
+ <td class="px-8 py-6 text-center">
+ <div
+ class="inline-flex items-center gap-3 font-black text-[0.65rem] tracking-widest uppercase italic">
+ <span class="text-text-dim ">{{ session[3] }}</span>
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 text-primary/40"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+ <span
+ class="{{ 'text-text-main italic ' if session[4] else 'text-success animate-pulse' }}">
+ {{ session[4] or 'ONGOING' }}
+ </span>
+ </div>
+ </td>
+ <td class="px-8 py-6 text-center">
+ <div class="flex items-center justify-center gap-4">
+ {% if session[6] == 'Active' %}
+  <div class="flex items-center gap-2 px-4 py-1.5 bg-success/10 rounded-full border border-success/30 shadow-[0_0_10px_rgba(0,255,136,0.1)]">
+  <span
+  class="w-2 h-2 bg-success rounded-full animate-pulse shadow-[0_0_8px_#00ff88]"></span>
+  <span
+  class="text-[0.65rem] font-black text-success uppercase tracking-[0.2em] italic">LIVE FEED</span>
+  </div>
+ {% else %}
+ <div class="flex items-center gap-2">
+ <span class="w-2 h-2 bg-card-glass rounded-full "></span>
+ <span
+ class="text-[0.6rem] font-black text-text-main/20 uppercase tracking-[0.25em] italic">ARCHIVED</span>
+ </div>
+ {% endif %}
+ </div>
+ </td>
+  <td class="px-10 py-6 text-right flex justify-end gap-3">
+  <button 
+  onclick="openRecordingModal('{{ session[8] }}', '{{ session[9] | replace('\n', ' ') | replace('\'', '\\\'') | replace('\"', '\\\"') }}', '{{ session[10] }}', '{{ session[3] }} - {{ session[4] }}', '{{ session[7] }}', '{{ session[6] }}')"
+  class="inline-flex items-center gap-3 bg-primary/10 text-primary text-[0.6rem] font-black uppercase tracking-[0.2em] italic px-6 py-2.5 rounded-2xl border border-primary/20 hover:bg-primary hover:text-bg-deep transition-all shadow-lg hover:shadow-primary/40 cursor-pointer">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+  Play
+  </button>
+  
+  <a href="/edit_session/{{ session[0] }}"
+  class="inline-flex items-center gap-3 bg-white/5 text-text-main text-[0.6rem] font-black uppercase tracking-[0.2em] italic px-6 py-2.5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all shadow-lg">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+  Edit
+  </a>
+
+  {% if session[6] == 'Active' %}
+  <a href="/end_session/{{ session[0] }}"
+  class="inline-flex items-center gap-3 bg-accent/5 text-accent text-[0.6rem] font-black uppercase tracking-[0.2em] italic px-6 py-2.5 rounded-2xl border border-accent/20 hover:bg-accent hover:text-text-main transition-all shadow-lg hover:shadow-accent/40">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+  Terminate
+  </a>
+  {% endif %}
+  </td>
+ </tr>
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
+
+ {% if not sessions %}
+ <div class="text-center py-40 bg-card-glass relative overflow-hidden">
+ <div class="absolute inset-0 bg-primary/5 blur-3xl rounded-full translate-y-1/2"></div>
+ <div class="relative z-10 group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-16 mx-auto mb-8 text-text-dim group-hover:scale-110 transition-transform"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+ <h3 class="font-black uppercase tracking-[0.3em] italic text-text-dim text-lg">No active sessions</h3>
+ <p class="text-[0.6rem] font-black uppercase tracking-[0.2em] italic mt-2">No teachers are currently teaching</p>
+ </div>
+ </div>
+ {% endif %}
+</div>
+
+<!-- Admin Recording View Modal -->
+<div id="admin-recording-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+    <div class="card bg-card-glass border border-primary/40 p-8 rounded-3xl max-w-4xl w-full mx-4 shadow-[0_0_50px_rgba(0,242,255,0.15)] transform scale-95 transition-transform duration-300">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h3 id="modal-teacher-name" class="text-2xl font-black text-white uppercase tracking-wider italic m-0">Teacher Name</h3>
+                <p id="modal-session-info" class="text-text-dim text-[0.7rem] uppercase tracking-widest mt-1 italic">Date • Timing</p>
+            </div>
+            <button onclick="closeRecordingModal()" class="text-text-dim hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="col-span-2 relative bg-black/50 rounded-2xl overflow-hidden border border-border-glass aspect-video">
+                <video id="modal-video-player" controls class="w-full h-full object-cover hidden"></video>
+                
+                <!-- Live Feed Simulation HUD -->
+                <div id="live-feed-hud" class="absolute inset-0 flex items-center justify-center hidden">
+                    <!-- Scanning HUD -->
+                    <div class="absolute inset-0 z-20 pointer-events-none overflow-hidden opacity-40">
+                        <div class="absolute top-8 left-8 w-14 h-14 border-t-2 border-l-2 border-primary/40 rounded-tl-2xl"></div>
+                        <div class="absolute top-8 right-8 w-14 h-14 border-t-2 border-r-2 border-primary/40 rounded-tr-2xl"></div>
+                        <div class="absolute bottom-8 left-8 w-14 h-14 border-b-2 border-l-2 border-primary/40 rounded-bl-2xl"></div>
+                        <div class="absolute bottom-8 right-8 w-14 h-14 border-b-2 border-r-2 border-primary/40 rounded-br-2xl"></div>
+                        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(var(--primary) 1px, transparent 1px); background-size: 30px 30px;"></div>
+                        <div class="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_15px_var(--primary)] animate-[HUD_SCAN_2.5s_infinite_ease-in-out]"></div>
+                    </div>
+                    
+                    <div class="text-center relative z-30">
+                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 mx-auto border border-primary/20 animate-pulse">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h4 class="text-xs font-black text-primary uppercase tracking-[0.4em] italic mb-2">Establishing Link...</h4>
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="w-1.5 h-1.5 bg-success rounded-full animate-ping"></span>
+                            <span class="text-[0.6rem] font-black text-success uppercase tracking-widest italic">Encrypted Connection Active</span>
+                        </div>
+                    </div>
+                    
+                    <!-- HUD Metrics -->
+                    <div class="absolute bottom-6 left-6 text-[0.55rem] font-black text-text-dim uppercase tracking-widest italic space-y-1">
+                        <div>Frequency: 44.1 kHz</div>
+                        <div>Signal: 100% Stability</div>
+                        <div>Latency: 14ms</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-span-1 flex flex-col gap-4">
+                <div>
+                    <label class="text-[0.65rem] font-black text-primary uppercase tracking-[0.25em] mb-2 block italic">Lesson Context</label>
+                    <div id="modal-transcript" class="text-sm text-text-dim italic bg-black/30 p-4 rounded-xl border border-white/5 h-[180px] overflow-y-auto mb-4">
+                        Transcript loading...
+                    </div>
+                    <a id="modal-download-btn" href="#" download class="btn btn-primary w-full justify-center h-12 text-[0.6rem] font-black rounded-xl bg-gradient-to-br from-primary to-primary-dark border-none shadow-lg uppercase tracking-[0.2em] italic hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Download Summary
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openRecordingModal(videoPath, transcript, date, timing, teacherName, status) {
+    const player = document.getElementById('modal-video-player');
+    const hud = document.getElementById('live-feed-hud');
+    const transcriptEl = document.getElementById('modal-transcript');
+    const downloadBtn = document.getElementById('modal-download-btn');
+    
+    document.getElementById('modal-session-info').innerText = `${date} • ${timing}`;
+    document.getElementById('modal-teacher-name').innerText = teacherName;
+    
+    if (status === 'Active') {
+        player.classList.add('hidden');
+        hud.classList.remove('hidden');
+        hud.classList.add('flex');
+        transcriptEl.innerText = 'Neural link established. Summarization protocol will initiate once the session is archived.';
+        downloadBtn.classList.add('hidden');
+    } else {
+        hud.classList.add('hidden');
+        hud.classList.remove('flex');
+        player.classList.remove('hidden');
+        player.src = videoPath;
+        transcriptEl.innerText = transcript || 'No transcript generated.';
+        
+        if (videoPath && videoPath !== 'None') {
+            downloadBtn.href = videoPath;
+            downloadBtn.classList.remove('hidden');
+            downloadBtn.classList.add('flex');
+        } else {
+            downloadBtn.classList.add('hidden');
+        }
+    }
+    
+    const modal = document.getElementById('admin-recording-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('.card').classList.remove('scale-95');
+    }, 10);
+}
+
+function closeRecordingModal() {
+    const modal = document.getElementById('admin-recording-modal');
+    const player = document.getElementById('modal-video-player');
+    player.pause();
+    player.src = '';
+    
+    modal.classList.add('opacity-0');
+    modal.querySelector('.card').classList.add('scale-95');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }, 300);
+}
+</script>
+
+<style>
+@keyframes HUD_SCAN {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 0.5; }
+    90% { opacity: 0.5; }
+    100% { top: 100%; opacity: 0; }
+}
+</style>
+{% endblock %}

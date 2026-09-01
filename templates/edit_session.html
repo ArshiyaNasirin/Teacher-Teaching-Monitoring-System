@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block page_title %}Modify Link{% endblock %}
+
+{% block content %}
+<div class="card mb-10 border-l-4 border-primary p-8 relative overflow-hidden group">
+    <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all pointer-events-none">
+    </div>
+    <div class="flex flex-col sm:flex-row gap-6 items-center relative z-10">
+        <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-[0_0_20px_rgba(0,242,255,0.25)] border border-primary/20 transition-all group-hover:scale-110">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        </div>
+        <div>
+            <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">Edit Live Session</h3>
+            <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">Update session parameters and status</p>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-3xl mx-auto">
+    <div class="card p-12 border-t-4 border-primary relative overflow-hidden bg-card-glass">
+        <div class="absolute -top-10 -right-10 w-48 h-48 bg-primary/5 rounded-full blur-3xl "></div>
+
+        <form method="POST" class="flex flex-col gap-8 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Teacher -->
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Assigned Teacher</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <select name="teacher_id" required class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner">
+                            {% for t in teachers %}
+                            <option value="{{ t[0] }}" class="bg-bg-dark" {% if t[0] == session[1] %}selected{% endif %}>{{ t[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Session Date -->
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Session Date</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <input type="date" name="session_date" value="{{ session[9] }}" required class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Class Name -->
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Class Name</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <input type="text" name="target_sector" value="{{ session[2] }}" placeholder="e.g. SECTOR-101" required class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all text-sm font-bold uppercase tracking-widest italic placeholder:text-text-main/5 shadow-inner">
+                    </div>
+                </div>
+
+                <!-- Lesson Topic -->
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Lesson Topic</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        <input type="text" name="topic" value="{{ session[5] }}" placeholder="Specify module..." required class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all text-sm font-bold uppercase tracking-widest italic placeholder:text-text-main/5 shadow-inner">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Start Time -->
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Start Time</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <input type="text" name="start_time" value="{{ session[3] }}" required class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner">
+                    </div>
+                </div>
+
+                <!-- End Time -->
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">End Time</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <input type="text" name="end_time" value="{{ session[4] }}" required class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="space-y-4">
+                <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Link Status</label>
+                <div class="relative group">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+                    <select name="status" required class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner">
+                        <option value="Active" class="bg-bg-dark" {% if session[6] == 'Active' %}selected{% endif %}>ACTIVE</option>
+                        <option value="Archived" class="bg-bg-dark" {% if session[6] == 'Archived' %}selected{% endif %}>ARCHIVED</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pt-8 flex flex-col sm:flex-row gap-6">
+                <button type="submit" class="btn btn-primary flex-[2] justify-center items-center gap-4 h-16 text-xs font-black rounded-2xl bg-gradient-to-br from-primary to-primary-dark border-none shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all uppercase tracking-[0.2em] italic text-text-main">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    Commit Changes
+                </button>
+                <a href="/sessions" class="btn border border-border-glass bg-card-glass flex-1 justify-center items-center h-16 text-text-dim rounded-2xl hover:text-text-main hover:bg-card-glass transition-all font-black uppercase tracking-[0.2em] text-[0.65rem] italic text-xs">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 mr-2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    Discard
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-12 flex items-center justify-center gap-6 hover: transition-all cursor-default group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 text-primary"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="text-[0.6rem] font-black uppercase tracking-[0.4em] italic group-hover:text-primary transition-colors">Sentinel Mod Protocol v4.0.0-ALPHA</span>
+    </div>
+</div>
+{% endblock %}

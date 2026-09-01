@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Onboarding - Aegis Academic Platform</title>
+ <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+ <script src="https://cdn.tailwindcss.com"></script>
+ <script src="https://unpkg.com/feather-icons"></script>
+ <script>
+ tailwind.config = {
+ theme: {
+ extend: {
+ fontFamily: {
+ sans: ['Outfit', 'Inter', 'sans-serif'],
+ },
+ colors: {
+ slate: {
+ 850: '#141c2c',
+ 900: '#ffffff',
+ 950: '#020617',
+ }
+ }
+ }
+ }
+ }
+ </script>
+ <style>
+ .input-glow:focus-within {
+ box-shadow: 0 0 20px -3px rgba(0, 229, 255, 0.2), inset 0 0 0 1px rgba(0, 229, 255, 0.5);
+ }
+ .btn-gradient {
+ background: linear-gradient(135deg, #00e5ff 0%, #ffea00 50%, #ff007f 100%);
+ background-size: 200% auto;
+ transition: 0.5s;
+ }
+ .btn-gradient:hover {
+ background-position: right center;
+ box-shadow: 0 0 25px -5px rgba(255, 234, 0, 0.5);
+ }
+ .bg-mesh {
+ background: 
+ radial-gradient(circle at top right, rgba(0, 229, 255, 0.15), transparent 40%),
+ radial-gradient(circle at bottom center, rgba(255, 234, 0, 0.1), transparent 40%),
+ radial-gradient(circle at center left, rgba(255, 0, 127, 0.1), transparent 50%);
+ }
+ @keyframes bgRun {
+ 0% { transform: scale(1.05) translate(0, 0); }
+ 50% { transform: scale(1.15) translate(-3%, 3%); }
+ 100% { transform: scale(1.05) translate(0, 0); }
+ }
+ .animate-bgrun {
+ animation: bgRun 25s ease-in-out infinite;
+ }
+ @keyframes runThrough {
+ 0% { transform: translateX(0); }
+ 45% { transform: translateX(120vw); opacity: 0; }
+ 50% { transform: translateX(-120vw); opacity: 0; }
+ 60% { opacity: 1; }
+ 100% { transform: translateX(0); }
+ }
+ .animate-run {
+ animation: runThrough 2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+ }
+ </style>
+ <!-- Favicon -->
+ <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+ <link rel="apple-touch-icon" href="/static/images/favicon.svg">
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex overflow-hidden selection:bg-violet-500/30 selection:text-violet-50">
+ 
+ <!-- Authentic Asymmetrical Grid Structure -->
+ <div class="flex flex-row-reverse w-full min-h-screen">
+ 
+ <!-- Right Visual Side (Abstract Illustration Panel) -->
+ <div class="hidden lg:flex w-[45%] relative bg-slate-900 border-l border-white/5 items-center justify-center overflow-hidden">
+ <!-- Animated overlay layers -->
+ <div class="absolute inset-0 bg-mesh mix-blend-screen z-10 pointer-events-none"></div>
+ <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10 pointer-events-none"></div>
+ 
+ <!-- We use an education / analytics classroom image with running animation -->
+ <img class="absolute inset-0 w-full h-full object-cover mix-blend-luminosity filter blur-[1px] transform scale-105 animate-bgrun" 
+ src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80" 
+ alt="Running Education Tech Animation">
+ 
+ <!-- Graphic content inside the panel -->
+ <div class="relative z-20 w-3/4 text-center">
+ <div class="w-20 h-20 mx-auto rounded-3xl bg-card-glass/5 border border-border-glass flex items-center justify-center backdrop-blur-xl mb-12 shadow-[0_0_40px_rgba(139,92,246,0.2)]">
+ <img src="/static/images/logo.svg" alt="Aegis Logo" class="w-12 h-12 object-contain">
+ </div>
+ <h1 onclick="this.classList.add('animate-run'); setTimeout(() => this.classList.remove('animate-run'), 2000);" 
+ class="text-4xl font-extrabold text-text-main tracking-tight mb-4 drop-shadow-md cursor-pointer relative z-50">
+ Join the Academic <br>
+ <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-400 to-blue-400">Vanguard.</span>
+ </h1>
+ <p class="text-slate-400 font-medium text-lg max-w-sm mx-auto leading-relaxed">
+ Deploy your secure biometric profile to easily manage attendance workflows, curriculum schedules, and more. 
+ </p>
+ <div class="mt-12 flex justify-center gap-3">
+ <span class="w-2 h-1.5 rounded-full bg-card-glass/20"></span>
+ <span class="w-10 h-1.5 rounded-full bg-pink-500"></span>
+ <span class="w-2 h-1.5 rounded-full bg-card-glass/20"></span>
+ </div>
+ </div>
+ </div>
+
+ <!-- Left Authentication Side -->
+ <div class="w-full lg:w-[55%] flex items-center justify-center p-8 sm:p-16 xl:p-24 relative bg-slate-950">
+ 
+ <!-- Subtle background lighting for form -->
+ <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-pink-600/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3 pointer-events-none"></div>
+
+ <div class="w-full max-w-md relative z-10">
+ 
+ <div class="mb-12">
+ <div class="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold uppercase tracking-widest mb-6">
+ <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><rect x="9" y="9" width="6" height="6"/><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="9" y1="2" x2="9" y2="9"/><line x1="15" y1="2" x2="15" y2="9"/><line x1="9" y1="15" x2="9" y2="22"/><line x1="15" y1="15" x2="15" y2="22"/><line x1="2" y1="9" x2="9" y2="9"/><line x1="2" y1="15" x2="9" y2="15"/><line x1="15" y1="9" x2="22" y2="9"/><line x1="15" y1="15" x2="22" y2="15"/></svg>
+ Aegis Onboarding
+ </div>
+ <h2 class="text-3xl font-extrabold text-text-main tracking-tight mb-2">Create Profile</h2>
+ <p class="text-slate-400 font-medium">Establish your secure digital identity.</p>
+ </div>
+
+ {% with messages = get_flashed_messages() %}
+ {% if messages %}
+ {% for message in messages %}
+ <div class="mb-8 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-semibold flex items-center gap-3 animate-pulse">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 flex-shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+ {{ message }}
+ </div>
+ {% endfor %}
+ {% endif %}
+ {% endwith %}
+
+ <form method="POST" action="/signup" class="space-y-6">
+ 
+ <div>
+ <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Identification (Email)</label>
+ <div class="relative group input-glow rounded-2xl transition-all duration-300">
+ <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-slate-500 group-focus-within:text-violet-400 transition-colors"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+ </div>
+ <input type="text" name="username" required placeholder="name@institution.edu" 
+ class="w-full pl-12 pr-4 py-4 bg-slate-900 border border-slate-800 rounded-2xl text-text-main font-medium placeholder-slate-600 focus:bg-slate-850 focus:outline-none transition-all">
+ </div>
+ </div>
+
+ <!-- Role Selection (Visual Aesthetic Mockup as Requested) -->
+ <div>
+ <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Requested Deployment Role</label>
+ <div class="relative group input-glow rounded-2xl transition-all duration-300">
+ <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-slate-500 group-focus-within:text-violet-400 transition-colors"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+ </div>
+ <select class="w-full pl-12 pr-10 py-4 bg-slate-900 border border-slate-800 rounded-2xl text-text-main font-medium appearance-none focus:bg-slate-850 focus:outline-none transition-all cursor-pointer">
+ <option value="teacher">Academic Staff (Teacher)</option>
+ <option value="admin">System Architect (Admin)</option>
+ <option value="student" disabled>Pupil (Student) - Enrollment Closed</option>
+ </select>
+ <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-slate-500"><polyline points="6 9 12 15 18 9"/></svg>
+ </div>
+ </div>
+ <p class="mt-2 text-[0.65rem] text-slate-500 font-medium tracking-wide">Note: Actual system roles are assigned through centralized rule processing.</p>
+ </div>
+
+ <div>
+ <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Biometric Passkey</label>
+ <div class="relative group input-glow rounded-2xl transition-all duration-300">
+ <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-slate-500 group-focus-within:text-violet-400 transition-colors"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+ </div>
+ <input type="password" name="password" required placeholder="Create a secure passkey" 
+ class="w-full pl-12 pr-4 py-4 bg-slate-900 border border-slate-800 rounded-2xl text-text-main font-medium placeholder-slate-600 focus:bg-slate-850 focus:outline-none transition-all">
+ </div>
+ </div>
+
+ <button type="submit" class="w-full py-4 mt-2 btn-gradient text-text-main font-extrabold rounded-2xl flex items-center justify-center gap-2 uppercase tracking-widest text-sm outline-none focus:ring-4 focus:ring-pink-500/30">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg> Initialize Account
+ </button>
+ 
+ <p class="text-center text-[0.65rem] text-slate-500 mt-4 leading-relaxed">
+ By deploying this node, you agree to the institution's <a href="#" class="text-violet-400 hover:text-text-main underline">Terms of Policy</a> &amp; <a href="#" class="text-violet-400 hover:text-text-main underline">Biometric Data Regulations</a>.
+ </p>
+ </form>
+
+ <div class="mt-8 flex items-center gap-4">
+ <div class="flex-1 h-px bg-slate-800"></div>
+ <span class="text-xs font-bold text-slate-600 uppercase tracking-widest">or bridge via</span>
+ <div class="flex-1 h-px bg-slate-800"></div>
+ </div>
+
+ <div class="mt-6 flex gap-4 justify-center">
+ <button type="button" onclick="alert('Enterprise SAML required.')" class="w-14 h-14 flex items-center justify-center bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 hover:border-violet-500/30 hover:scale-105 transition-all group shadow-lg shadow-black/20">
+ <svg class="w-5 h-5 text-slate-400 group-hover:text-text-main transition-colors" viewBox="0 0 24 24" fill="currentColor"><path d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zm12.6 0H12.6V0H24v11.4z"/></svg>
+ </button>
+ <button type="button" onclick="alert('Enterprise SAML required.')" class="w-14 h-14 flex items-center justify-center bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 hover:border-violet-500/30 hover:scale-105 transition-all group shadow-lg shadow-black/20">
+ <svg class="w-5 h-5 text-slate-400 group-hover:text-text-main transition-colors" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+ </button>
+ </div>
+
+ <div class="mt-10 text-center">
+ <p class="text-sm font-medium text-slate-500">Already linked? <a href="/login" class="text-violet-400 hover:text-violet-300 font-bold ml-1 transition-colors">Access Portal</a></p>
+ </div>
+ </div>
+ 
+ </div>
+ </div>
+
+ <script src="{{ url_for('static', filename='js/core.js') }}"></script>
+ <script>
+ feather.replace();
+
+ // Spark tracking cursor effect
+ document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('mousemove', (e) => {
+ const spark = document.createElement('div');
+ spark.style.position = 'fixed';
+ spark.style.left = e.clientX + 'px';
+ spark.style.top = e.clientY + 'px';
+ const colors = ['#ff007f', '#00e5ff', '#2dd4bf', '#ffea00', '#facc15', '#06b6d4'];
+ const color = colors[Math.floor(Math.random() * colors.length)];
+ 
+ spark.style.width = '5px';
+ spark.style.height = '5px';
+ spark.style.backgroundColor = color;
+ spark.style.borderRadius = '50%';
+ spark.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+ spark.style.pointerEvents = 'none';
+ spark.style.zIndex = '9999';
+ spark.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+ document.body.appendChild(spark);
+
+ setTimeout(() => {
+ const angle = Math.random() * Math.PI * 2;
+ const distance = Math.random() * 40 + 10;
+ spark.style.transform = `translate(${Math.cos(angle)*distance}px, ${Math.sin(angle)*distance}px) scale(0)`;
+ spark.style.opacity = '0';
+ }, 10);
+
+ setTimeout(() => {
+ if (spark.parentNode) spark.remove();
+ }, 600);
+ });
+ });
+ </script>
+</body>
+</html>

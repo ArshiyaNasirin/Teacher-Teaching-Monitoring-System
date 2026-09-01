@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block page_title %}Neural Archives{% endblock %}
+
+{% block content %}
+<div
+ class="card flex flex-wrap justify-between items-center mb-10 border-l-4 border-secondary p-8 relative overflow-hidden group">
+ <div
+ class="absolute -right-4 -top-4 w-32 h-32 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-all pointer-events-none">
+ </div>
+ <div class="relative z-10 flex gap-6 items-center">
+ <div
+ class="w-14 h-14 rounded-2xl flex items-center justify-center text-secondary border border-secondary/35 transition-all group-hover:scale-110 group-hover:border-secondary/60">
+ <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+ </div>
+ <div>
+ <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">Lesson Notes</h3>
+ <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">
+ Review and manage submitted lesson notes</p>
+ </div>
+ </div>
+ {% if current_user.role == 'teacher' %}
+ <a href="/submit_notes"
+ class="relative z-10 btn bg-gradient-to-br from-secondary to-secondary-dark h-16 px-10 rounded-2xl border-none font-black shadow-xl shadow-secondary/20 hover:shadow-secondary/40 hover:-translate-y-1 transition-all uppercase tracking-[0.2em] italic text-xs text-text-main">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+ Initialize Data Node
+ </a>
+ {% endif %}
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+ <div class="lg:col-span-8 flex flex-col gap-8 text-[0.65rem] sm:text-[0.75rem]">
+ {% if notes %}
+ <div class="flex flex-col gap-8">
+ {% for note in notes %}
+ <div
+ class="card p-10 relative group border border-border-glass hover:border-secondary/30 transition-all duration-500 overflow-hidden bg-card-glass">
+ <div
+ class="absolute -right-20 -top-20 w-80 h-80 bg-secondary/5 rounded-full blur-3xl group-hover: transition-opacity pointer-events-none">
+ </div>
+
+ <div class="flex flex-wrap justify-between items-start gap-8 mb-10 relative z-10">
+ <div class="flex-1">
+ <div class="flex items-center gap-3 mb-4">
+ <span
+ class="px-4 py-1 bg-secondary/10 text-secondary border border-secondary/20 rounded-xl font-black uppercase tracking-widest italic text-[0.6rem]">{{
+ note[7] }}</span>
+ <span
+ class="w-1.5 h-1.5 bg-secondary rounded-full animate-pulse shadow-[0_0_8px_#ff6b00]"></span>
+ <span
+ class="font-black text-text-dim uppercase tracking-[0.25em] italic text-[0.6rem]">Temporal
+ Phase Sync</span>
+ </div>
+ <h3
+ class="m-0 mb-6 text-2xl font-black text-text-main uppercase tracking-wider italic group-hover:text-secondary transition-colors duration-500">
+ {{ note[4] }}</h3>
+ <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+ <div class="flex items-center gap-4">
+ <div
+ class="w-10 h-10 rounded-xl flex items-center justify-center text-secondary border border-secondary/35 group-hover:scale-110 transition-transform group-hover:border-secondary/60">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+ </div>
+ <span class="font-black text-text-main uppercase tracking-widest italic ">{{
+ note[8] }}</span>
+ </div>
+ <div class="flex items-center gap-4 text-text-dim">
+ <div
+ class="w-10 h-10 rounded-xl flex items-center justify-center border border-white/20/60 group-hover:scale-110 transition-transform group-hover:">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ </div>
+ <span class="font-bold uppercase tracking-widest italic ">{{ note[3] }}</span>
+ </div>
+ </div>
+ </div>
+ <div>
+ <div
+ class="px-5 py-2 bg-success/10 text-success border border-success/20 rounded-xl font-black uppercase tracking-widest italic text-[0.6rem] shadow-lg shadow-success/5 animate-pulse">
+ {{ note[6] }}
+ </div>
+ </div>
+ </div>
+
+ <div
+ class="bg-card-glass p-10 rounded-[32px] border border-border-glass leading-relaxed text-text-dim text-[0.8rem] font-bold mb-10 relative italic group-hover:bg-card-glass transition-colors duration-500 shadow-inner">
+ <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute top-8 right-10 w-12 h-12 text-secondary"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+ <p class="m-0 relative z-10 leading-[1.8] uppercase tracking-[0.05em]">{{ note[5] }}</p>
+ </div>
+
+ <div class="flex justify-end gap-3 relative z-10">
+ {% if note[9] and note[9] != 'None' %}
+ <button type="button" onclick="openRecordingModal('{{ note[9] }}', '{{ note[10] | replace('\n', ' ') | replace('\'', '\\\'') | replace('\"', '\\\"') }}', '{{ note[3] }}', '{{ note[4] }}', '{{ note[8] }}')"
+ class="btn bg-card-glass border border-border-glass h-12 px-8 rounded-2xl text-secondary hover:text-bg-deep hover:bg-secondary hover:border-secondary transition-all font-black uppercase tracking-[0.2em] italic text-[0.6rem] cursor-pointer">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 mr-2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+ Play Summary
+ </button>
+ {% endif %}
+ {% if current_user.role == 'teacher' %}
+ <a href="/edit_notes/{{ note[0] }}"
+ class="btn bg-card-glass border border-border-glass h-12 px-8 rounded-2xl text-text-dim hover:text-secondary hover:border-secondary/40 transition-all font-black uppercase tracking-[0.2em] italic text-[0.6rem]">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 mr-2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+ Edit Note
+ </a>
+ {% endif %}
+ {% if current_user.role == 'teacher' or current_user.role == 'admin' %}
+ <form action="/delete_notes/{{ note[0] }}" method="POST" class="m-0 p-0 inline-block" onsubmit="return confirm('Are you sure you want to delete this lesson note?');">
+    <button type="submit" class="btn bg-card-glass border border-border-glass h-12 px-8 rounded-2xl text-[#f43f5e] hover:text-white hover:bg-[#f43f5e]/80 hover:border-[#f43f5e]/30 transition-all font-black uppercase tracking-[0.2em] italic text-[0.6rem] cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 mr-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        Delete
+    </button>
+ </form>
+ {% endif %}
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ {% else %}
+ <div class="text-center py-32 px-10 border-dashed border-2 border-border-glass m-10 rounded-[40px] bg-card-glass">
+ <div
+ class="w-20 h-20 rounded-[24px] flex items-center justify-center mx-auto mb-10 text-secondary border border-secondary/30 relative ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-9"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+ </div>
+ <h3 class="mb-4 font-black text-2xl text-text-main italic uppercase tracking-widest">No Notes Yet</h3>
+ <p
+ class="text-text-dim text-[0.7rem] font-black uppercase tracking-[0.25em] mb-12 max-w-sm mx-auto leading-relaxed italic">
+ No lesson notes have been submitted yet. Add the first note to get started.</p>
+ {% if current_user.role == 'teacher' %}
+ <a href="/submit_notes"
+ class="btn bg-gradient-to-br from-secondary to-secondary-dark h-16 px-12 rounded-2xl border-none font-black shadow-xl shadow-secondary/20 hover:shadow-secondary/40 text-text-main uppercase tracking-[0.2em] italic text-xs">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+ Submit First Note
+ </a>
+ {% endif %}
+ </div>
+ {% endif %}
+ </div>
+
+ <!-- Sidebar Info -->
+ <div class="lg:col-span-4 flex flex-col gap-8">
+ <div class="card p-8 bg-secondary/5 border-l-4 border-secondary relative overflow-hidden group">
+ <div
+ class="absolute top-0 right-0 w-24 h-24 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/20 transition-all">
+ </div>
+ <div class="flex gap-4 items-center mb-8 relative z-10">
+ <div
+ class="w-12 h-12 rounded-2xl flex items-center justify-center text-secondary border border-secondary/35">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+ </div>
+ <h4 class="font-black text-[0.7rem] uppercase tracking-[0.3em] text-text-main italic ">Lesson
+ Archive</h4>
+ </div>
+ <p
+ class="text-[0.75rem] text-text-dim leading-relaxed font-bold italic relative z-10 m-0 uppercase tracking-widest">
+ Lesson nodes are indexed and linked to teacher identities. This enables high-velocity pattern analysis
+ of instructional data across all sectors.
+ </p>
+ </div>
+
+ <div class="card p-8 border border-border-glass bg-card-glass group overflow-hidden relative">
+ <div
+ class="absolute bottom-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover: transition-opacity">
+ </div>
+ <h4
+ class="text-[0.65rem] font-black mb-8 flex items-center gap-3 uppercase tracking-[0.25em] text-text-main italic ">
+ <span class="w-6 h-6 rounded-lg flex items-center justify-center border border-white/20/60">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 text-text-dim"><circle cx="12" cy="12" r="10"/></svg>
+ </span>
+ Archive Status
+ </h4>
+ <div class="space-y-6 relative z-10">
+ <div class="flex justify-between items-center text-[0.65rem]">
+ <span class="text-text-dim font-black uppercase tracking-widest ">Cipher State</span>
+ <span
+ class="text-success font-black uppercase tracking-widest italic shadow-[0_0_10px_#00ff88]">ENABLED</span>
+ </div>
+ <div class="flex justify-between items-center text-[0.65rem]">
+ <span class="text-text-dim font-black uppercase tracking-widest ">Persistence</span>
+ <span class="text-text-main font-black uppercase tracking-widest italic ">ACTIVE</span>
+ </div>
+ <div class="h-1.5 bg-card-glass rounded-full overflow-hidden mt-6 border border-border-glass">
+ <div class="h-full bg-secondary w-3/4 shadow-[0_0_10px_#ff6b00] "></div>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>
+<!-- Admin Recording View Modal -->
+<div id="admin-recording-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+    <div class="card bg-card-glass border border-secondary/40 p-8 rounded-3xl max-w-4xl w-full mx-4 shadow-[0_0_50px_rgba(139,92,246,0.15)] transform scale-95 transition-transform duration-300">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h3 id="modal-teacher-name" class="text-2xl font-black text-white uppercase tracking-wider italic m-0">Teacher Name</h3>
+                <p id="modal-session-info" class="text-text-dim text-[0.7rem] uppercase tracking-widest mt-1 italic">Date • Timing</p>
+            </div>
+            <button onclick="closeRecordingModal()" class="text-text-dim hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="col-span-2 relative bg-black/50 rounded-2xl overflow-hidden border border-border-glass aspect-video">
+                <video id="modal-video-player" controls class="w-full h-full object-cover hidden"></video>
+            </div>
+            <div class="col-span-1 flex flex-col gap-4">
+                <div>
+                    <label class="text-[0.65rem] font-black text-secondary uppercase tracking-[0.25em] mb-2 block italic">Live Transcript</label>
+                    <div id="modal-transcript" class="text-sm text-text-dim italic bg-black/30 p-4 rounded-xl border border-white/5 h-[180px] overflow-y-auto mb-4">
+                        Transcript loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openRecordingModal(videoPath, transcript, date, topic, teacherName) {
+    const player = document.getElementById('modal-video-player');
+    const transcriptEl = document.getElementById('modal-transcript');
+    
+    document.getElementById('modal-session-info').innerText = `${date} • ${topic}`;
+    document.getElementById('modal-teacher-name').innerText = teacherName;
+    
+    player.classList.remove('hidden');
+    player.src = videoPath;
+    transcriptEl.innerText = transcript || 'No transcript generated.';
+    
+    const modal = document.getElementById('admin-recording-modal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('.card').classList.remove('scale-95');
+    }, 10);
+}
+
+function closeRecordingModal() {
+    const modal = document.getElementById('admin-recording-modal');
+    const player = document.getElementById('modal-video-player');
+    player.pause();
+    player.src = '';
+    
+    modal.classList.add('opacity-0');
+    modal.querySelector('.card').classList.add('scale-95');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }, 300);
+}
+</script>
+{% endblock %}

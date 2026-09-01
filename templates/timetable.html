@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block page_title %}Timetable Schedule{% endblock %}
+
+{% block content %}
+<div
+ class="card flex flex-wrap justify-between items-center mb-10 border-l-4 border-accent p-8 relative overflow-hidden group">
+ <div
+ class="absolute -right-4 -top-4 w-24 h-24 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10 transition-all pointer-events-none">
+ </div>
+ <div class="relative z-10 flex flex-col sm:flex-row gap-6 items-center">
+ <div
+ class="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center text-accent shadow-[0_0_20px_rgba(255,0,122,0.2)] border border-accent/20">
+ <!-- grid/cpu icon -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ </div>
+ <div>
+ <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">Timetable Matrix</h3>
+ <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">
+ Coordinate classes and subjects</p>
+ </div>
+ </div>
+ {% if current_user.role == 'admin' %}
+ <a href="/add_schedule"
+ class="relative z-10 btn btn-primary h-14 px-8 rounded-2xl bg-gradient-to-br from-accent to-accent-dark border-none font-black shadow-xl shadow-accent/10 hover:shadow-accent/30 transition-all uppercase tracking-widest italic">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+ Add Schedule
+ </a>
+ {% endif %}
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+ <div class="lg:col-span-8 flex flex-col gap-8">
+ <div class="card p-0 overflow-hidden border-t-4 border-accent/30 bg-card-glass">
+ {% if schedules %}
+ <div class="overflow-x-auto">
+ <table class="w-full text-left border-collapse">
+ <thead>
+ <tr class="bg-card-glass">
+ <th
+ class="px-8 py-6 text-[0.6rem] font-black text-text-dim uppercase tracking-[0.25em] italic ">
+ Teacher Name</th>
+ <th
+ class="px-8 py-6 text-[0.6rem] font-black text-text-dim uppercase tracking-[0.25em] italic ">
+ Class Name</th>
+ <th
+ class="px-8 py-6 text-[0.6rem] font-black text-text-dim uppercase tracking-[0.25em] italic ">
+ Day</th>
+ <th
+ class="px-8 py-6 text-[0.6rem] font-black text-text-dim uppercase tracking-[0.25em] italic ">
+ AM/PM</th>
+ <th
+ class="px-8 py-6 text-[0.6rem] font-black text-text-dim uppercase tracking-[0.25em] italic text-center">
+ Time Window</th>
+ {% if current_user.role == 'admin' %}
+ <th
+ class="px-8 py-6 text-[0.6rem] font-black text-text-dim uppercase tracking-[0.25em] italic text-right">
+ Actions</th>
+ {% endif %}
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-white/[0.03]">
+ {% for schedule in schedules %}
+ {% set is_own = (current_user.role == 'teacher' and schedule[1]|upper == current_teacher_name|upper) %}
+ <tr class="transition-all group {% if is_own %}bg-accent/[0.12] border-l-4 border-accent shadow-[0_0_20px_rgba(255,0,122,0.1)] hover:bg-accent/[0.18]{% else %}hover:bg-accent/5{% endif %}">
+ <td class="px-8 py-6">
+ <div class="flex items-center gap-5">
+ <div
+ class="w-10 h-10 bg-card-glass rounded-xl flex items-center justify-center text-text-dim border border-border-glass group-hover:scale-110 group-hover:border-accent/40 group-hover:text-accent transition-all shadow-inner">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+ </div>
+ <span
+ class="font-black text-text-main text-lg group-hover:translate-x-1 transition-transform italic">{{
+ schedule[1] }}</span>
+ {% if is_own %}
+ <span class="ml-3 inline-flex items-center px-2 py-0.5 bg-accent/20 text-accent border border-accent/30 rounded text-[0.55rem] font-black uppercase tracking-wider animate-pulse">YOU</span>
+ {% endif %}
+ </div>
+ </td>
+ <td class="px-8 py-6">
+ <span
+ class="inline-flex items-center px-4 py-1 bg-accent/10 text-accent border border-accent/20 rounded-lg text-[0.6rem] font-black uppercase tracking-widest italic">
+ {{ schedule[2] }}
+ </span>
+ </td>
+ <td class="px-8 py-6">
+ <span class="text-text-main font-bold uppercase text-xs tracking-widest">{{
+ schedule[3] }}</span>
+ </td>
+ <td class="px-8 py-6">
+ <span
+ class="text-text-dim font-black uppercase tracking-widest text-[0.6rem] italic group-hover: transition-opacity">{{
+ schedule[6] }}</span>
+ </td>
+ <td class="px-8 py-6 text-center">
+ <div
+ class="inline-flex items-center gap-3 px-4 py-2 bg-card-glass rounded-xl border border-border-glass text-text-dim font-mono text-xs group-hover:border-accent/30 transition-all">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class=""><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ <span class="font-bold">{{ schedule[4] }}</span>
+ <span class="">—</span>
+ <span class="font-bold">{{ schedule[5] }}</span>
+ </div>
+ </td>
+ {% if current_user.role == 'admin' %}
+ <td class="px-8 py-6 text-right">
+ <div class="flex justify-end gap-3">
+ <a href="/edit_schedule/{{ schedule[0] }}" title="Edit Schedule"
+ class="w-10 h-10 inline-flex items-center justify-center rounded-xl bg-card-glass text-accent hover:text-text-main hover:bg-accent/20 border border-transparent hover:border-accent/30 transition-all">
+ <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:scale-110 transition-transform"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+ </a>
+ <form action="/delete_schedule/{{ schedule[0] }}" method="POST" class="m-0 p-0 inline-block" onsubmit="return confirm('Are you sure you want to delete this schedule?');">
+     <button type="submit" title="Delete Schedule" class="w-10 h-10 inline-flex items-center justify-center rounded-xl bg-card-glass text-[#f43f5e] hover:text-white hover:bg-[#f43f5e]/80 border border-transparent hover:border-[#f43f5e]/30 transition-all cursor-pointer">
+         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+     </button>
+ </form>
+ </div>
+ </td>
+ {% endif %}
+ </tr>
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
+ {% else %}
+ <div class="text-center py-24 px-8 ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-6 "><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ <h3 class="mb-3 font-black text-xl text-text-main uppercase tracking-[0.3em] italic">No Schedule Found</h3>
+ <p class="text-text-dim text-xs mb-10 max-w-xs mx-auto font-bold tracking-widest uppercase italic">
+ Add a schedule to begin tracking</p>
+ </div>
+ {% endif %}
+ </div>
+ </div>
+
+ <div class="lg:col-span-4 flex flex-col gap-8">
+ <div class="card p-8 bg-accent/5 border-l-4 border-accent relative overflow-hidden group">
+ <div
+ class="absolute -right-8 -top-8 w-24 h-24 bg-accent/10 rounded-full blur-2xl group-hover:bg-accent/20 transition-all">
+ </div>
+ <div class="flex gap-4 items-center mb-6 relative z-10">
+ <div
+ class="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center text-accent border border-accent/20 shadow-lg shadow-accent/5">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+ </div>
+ <h4 class="font-black text-[0.65rem] uppercase tracking-[0.25em] text-text-main italic ">Punctuality Policy</h4>
+ </div>
+ <p class="text-[0.8rem] text-text-dim leading-relaxed font-bold italic relative z-10 m-0">
+ The system tracks the timetable in real-time. If a teacher fails to check in for their scheduled class window, a late notification is sent to the AHM dashboard.
+ </p>
+ </div>
+
+ <div class="card p-8 border border-border-glass bg-card-glass relative overflow-hidden group">
+ <div class="absolute -right-8 -top-8 w-24 h-24 bg-card-glass rounded-full blur-2xl"></div>
+ <h4
+ class="text-[0.65rem] font-black mb-8 flex items-center gap-3 uppercase tracking-[0.25em] text-text-main italic ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="6"/><rect x="2" y="10" width="6" height="6"/><rect x="16" y="10" width="6" height="6"/><line x1="5" y1="16" x2="12" y2="8"/><line x1="19" y1="16" x2="12" y2="8"/></svg>
+ Session Phases
+ </h4>
+ <div class="space-y-6 relative z-10">
+ <div
+ class="flex items-start gap-4 p-4 rounded-2xl hover:bg-card-glass transition-colors border border-transparent hover:border-border-glass">
+ <div
+ class="w-9 h-9 rounded-xl bg-accent/5 flex items-center justify-center flex-shrink-0 text-accent italic font-black text-[0.65rem] border border-accent/10">
+ AM</div>
+ <div>
+ <h5
+ class="text-[0.6rem] font-black text-text-main uppercase tracking-widest mb-1 italic ">
+ Morning Session</h5>
+ <p class="text-[0.65rem] text-text-dim leading-relaxed m-0 italic font-bold ">Morning
+ classes focus on early arrival and readiness.</p>
+ </div>
+ </div>
+ <div
+ class="flex items-start gap-4 p-4 rounded-2xl hover:bg-card-glass transition-colors border border-transparent hover:border-border-glass">
+ <div
+ class="w-9 h-9 rounded-xl bg-secondary/5 flex items-center justify-center flex-shrink-0 text-secondary italic font-black text-[0.65rem] border border-secondary/10">
+ PM</div>
+ <div>
+ <h5
+ class="text-[0.6rem] font-black text-text-main uppercase tracking-widest mb-1 italic ">
+ Afternoon Session</h5>
+ <p class="text-[0.65rem] text-text-dim leading-relaxed m-0 italic font-bold ">
+ Afternoon tracking ensures teacher punctuality across the day.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>
+{% endblock %}

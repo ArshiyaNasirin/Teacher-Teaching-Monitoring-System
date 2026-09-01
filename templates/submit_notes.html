@@ -1,0 +1,440 @@
+{% extends "base.html" %}
+
+{% block page_title %}Archive Submission{% endblock %}
+
+{% block content %}
+<div class="card mb-10 border-l-4 border-secondary p-8 relative overflow-hidden group">
+ <div
+ class="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-all pointer-events-none">
+ </div>
+ <div class="flex gap-6 items-center relative z-10">
+ <div
+ class="w-14 h-14 rounded-2xl flex items-center justify-center text-secondary border border-secondary/35 transition-all group-hover:scale-110 group-hover:border-secondary/60" style="background:rgba(139,92,246,0.08);">
+ <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+ </div>
+ <div>
+ <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">Submit Lesson Notes</h3>
+ <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">Log
+ your teaching session details and notes</p>
+ </div>
+ </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+ <div class="lg:col-span-8 flex flex-col gap-8">
+ <div class="card p-10 border-t-4 border-secondary/30 relative overflow-hidden bg-card-glass">
+ <div
+ class="absolute top-0 right-0 w-64 h-64 bg-secondary/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none">
+ </div>
+
+ <form method="POST" enctype="multipart/form-data" id="notesForm" class="flex flex-col gap-8 relative z-10">
+ <input type="hidden" name="latitude" id="hidden-lat">
+ <input type="hidden" name="longitude" id="hidden-lon">
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Identify
+ Source</label>
+ <div class="relative group">
+ <span class="absolute left-5 top-1/2 -translate-y-1/2 text-text-dim group-focus-within:text-secondary transition-colors pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+ </span>
+ <select name="teacher_id" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-secondary/40 focus:ring-1 focus:ring-secondary/10 transition-all text-sm font-bold tracking-widest uppercase italic">
+ <option value="" class="bg-bg-dark">Select identity...</option>
+ {% for t in teachers %}
+ <option value="{{ t[0] }}" class="bg-bg-dark">{{ t[1] }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ </div>
+
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Target
+ Sector / Hub</label>
+ <div class="relative group">
+ <span class="absolute left-5 top-1/2 -translate-y-1/2 text-text-dim group-focus-within:text-secondary transition-colors pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+ </span>
+ <input type="text" name="class_name" placeholder="e.g. SECTOR-101" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-secondary/40 focus:ring-1 focus:ring-secondary/10 transition-all text-sm font-bold tracking-widest uppercase italic placeholder:text-text-main/5">
+ </div>
+ </div>
+ </div>
+
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Session
+ Time</label>
+ <div class="relative group">
+ <span class="absolute left-5 top-1/2 -translate-y-1/2 text-text-dim group-focus-within:text-secondary transition-colors pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ </span>
+ <select name="session" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-secondary/40 focus:ring-1 focus:ring-secondary/10 transition-all text-sm font-bold tracking-widest uppercase italic">
+ <option value="" class="bg-bg-dark">Select session...</option>
+ <option value="AM" class="bg-bg-dark">Morning Session (AM)</option>
+ <option value="PM" class="bg-bg-dark">Afternoon Session (PM)</option>
+ </select>
+ </div>
+ </div>
+
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Lesson
+ Topic</label>
+ <div class="relative group">
+ <span class="absolute left-5 top-1/2 -translate-y-1/2 text-text-dim group-focus-within:text-secondary transition-colors pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+ </span>
+ <input type="text" name="lesson_topic" placeholder="Topic / Focus area" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-secondary/40 focus:ring-1 focus:ring-secondary/10 transition-all text-sm font-bold tracking-widest uppercase italic placeholder:text-text-main/5">
+ </div>
+ </div>
+ </div>
+
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Lesson
+ Notes</label>
+ <div class="relative group">
+ <span class="absolute left-6 top-7 text-text-dim group-focus-within:text-secondary transition-colors pointer-events-none">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
+ </span>
+ <textarea name="notes" placeholder="Write detailed session notes here..." required
+ class="pl-16 pr-8 py-8 bg-card-glass border-border-glass min-h-[250px] w-full rounded-[40px] text-text-main focus:border-secondary/40 focus:ring-1 focus:ring-secondary/10 transition-all text-sm font-bold tracking-widest leading-relaxed italic placeholder:text-text-main/5 uppercase shadow-inner"></textarea>
+ </div>
+ </div>
+
+ <!-- VIDEO SUMMARY RECORDING UI -->
+ <div class="space-y-4">
+    <label class="text-[0.65rem] font-black text-secondary uppercase tracking-[0.25em] mb-2 block italic">Summary Recording (Max 2 Mins)</label>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Video Stream Box -->
+        <div class="relative bg-black/50 rounded-[32px] overflow-hidden border border-secondary/30 aspect-video shadow-inner flex items-center justify-center">
+            <video id="camera-stream" class="w-full h-full object-cover hidden" autoplay muted playsinline></video>
+            
+            <div id="camera-placeholder" class="text-center text-text-dim relative z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 opacity-50"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                <p class="font-black text-[0.65rem] uppercase tracking-widest italic">Camera Offline</p>
+            </div>
+            
+            <!-- Recording HUD overlay -->
+            <div id="recording-hud" class="absolute inset-0 z-20 pointer-events-none opacity-0 transition-opacity">
+                <div class="absolute top-4 left-4 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-[#ff007f] rounded-full animate-pulse shadow-[0_0_8px_#ff007f]"></span>
+                    <span class="text-[0.6rem] font-black text-[#ff007f] uppercase tracking-widest italic">REC</span>
+                </div>
+                <div class="absolute top-4 right-4 text-[0.7rem] font-mono text-white font-black" id="recording-timer">
+                    02:00
+                </div>
+                <div class="absolute inset-0 border-2 border-[#ff007f]/30 m-4 rounded-xl"></div>
+            </div>
+        </div>
+
+        <!-- Transcript & Controls -->
+        <div class="flex flex-col gap-4">
+            <div class="flex-1 bg-card-glass border border-border-glass rounded-[32px] p-6 relative overflow-hidden flex flex-col">
+                <h5 class="text-[0.6rem] font-black text-text-main uppercase tracking-[0.2em] italic mb-4 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                    Live Transcript
+                </h5>
+                <textarea name="transcript" id="transcript-output" readonly placeholder="Transcription will appear here during recording..." class="w-full flex-1 bg-transparent border-none text-text-dim text-sm italic focus:ring-0 resize-none p-0 tracking-wide"></textarea>
+            </div>
+            
+            <div class="flex gap-4">
+                <button type="button" id="start-btn" class="flex-1 h-14 bg-secondary/10 text-secondary border border-secondary/30 rounded-2xl font-black text-[0.65rem] uppercase tracking-widest italic hover:bg-secondary hover:text-bg-deep transition-all flex items-center justify-center gap-2 shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                    Start Recording
+                </button>
+                <button type="button" id="stop-btn" disabled class="flex-1 h-14 bg-[#ff007f]/10 text-[#ff007f] border border-[#ff007f]/30 rounded-2xl font-black text-[0.65rem] uppercase tracking-widest italic hover:bg-[#ff007f] hover:text-white transition-all flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+                    Stop Early
+                </button>
+            </div>
+        </div>
+    </div>
+ </div>
+
+ <input type="file" name="video" id="video-input" class="hidden" accept="video/webm">
+
+ <div class="pt-10 flex flex-col sm:flex-row gap-6">
+ <button type="submit" id="submit-form-btn" disabled
+ class="btn btn-primary flex-[2] justify-center items-center gap-4 h-16 text-xs font-black rounded-2xl bg-gradient-to-br from-secondary to-secondary-dark border-none shadow-xl shadow-secondary/20 hover:shadow-secondary/40 transition-all uppercase tracking-[0.2em] italic text-text-main text-xs opacity-50 cursor-not-allowed">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+ Submit Notes
+ </button>
+ <a href="/lesson_notes"
+ class="btn border border-border-glass bg-card-glass h-16 sm:w-48 justify-center text-text-dim rounded-2xl hover:text-text-main hover:bg-card-glass transition-all font-black uppercase tracking-[0.2em] text-[0.65rem] italic">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+ Cancel
+ </a>
+ </div>
+ </form>
+ </div>
+ </div>
+
+ <div class="lg:col-span-4 flex flex-col gap-8">
+ <div class="card p-8 bg-secondary/5 border-l-4 border-secondary relative overflow-hidden group">
+ <div
+ class="absolute -right-8 -top-8 w-24 h-24 bg-secondary/10 rounded-full blur-2xl group-hover:bg-secondary/20 transition-all">
+ </div>
+ <h4
+ class="text-[0.65rem] font-black mb-8 flex items-center gap-3 uppercase tracking-[0.25em] text-text-main italic ">
+ <span class="w-7 h-7 bg-secondary/15 rounded-lg flex items-center justify-center">
+ <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+ </span>
+ Submission Guide
+ </h4>
+ <div class="space-y-8 relative z-10">
+ <div class="flex gap-5 items-start group/item">
+ <div
+ class="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary border border-secondary/20 group-hover/item:scale-110 transition-transform shrink-0 shadow-lg shadow-secondary/5">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+ </div>
+ <div>
+ <div
+ class="text-[0.65rem] font-black text-text-main uppercase tracking-widest italic mb-1 ">
+ Detailed Notes</div>
+ <p
+ class="text-[0.7rem] text-text-dim leading-relaxed font-bold italic uppercase tracking-widest">
+ Include lesson objectives, topics covered, and student engagement levels.</p>
+ </div>
+ </div>
+ <div class="flex gap-5 items-start group/item">
+ <div
+ class="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary border border-secondary/20 group-hover/item:scale-110 transition-transform shrink-0 shadow-lg shadow-secondary/5">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+ </div>
+ <div>
+ <div
+ class="text-[0.65rem] font-black text-text-main uppercase tracking-widest italic mb-1 ">
+ Accuracy Matters</div>
+ <p
+ class="text-[0.7rem] text-text-dim leading-relaxed font-bold italic uppercase tracking-widest">
+ Accurate submissions help admin review and evaluate lesson delivery quality.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div class="card p-8 border border-border-glass bg-card-glass group overflow-hidden relative">
+ <div
+ class="absolute -right-10 -bottom-10 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover: transition-opacity">
+ </div>
+ <h4
+ class="text-[0.65rem] font-black mb-5 flex items-center gap-3 uppercase tracking-[0.25em] text-text-main italic ">
+ <span class="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center">
+ <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+ </span>
+ Reminder
+ </h4>
+ <p
+ class="text-[0.75rem] text-text-dim leading-relaxed font-bold italic m-0 uppercase tracking-widest">
+ Include classroom conditions and student engagement levels for enhanced monitoring accuracy.
+ </p>
+ </div>
+ </div>
+</div>
+
+<script>
+    let mediaRecorder;
+    let recordedChunks = [];
+    let recognition;
+    let timerInterval;
+    let timeLeft = 120; // 2 mins
+    let globalStream = null;
+
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const submitBtn = document.getElementById('submit-form-btn');
+    const videoPreview = document.getElementById('camera-stream');
+    const cameraPlaceholder = document.getElementById('camera-placeholder');
+    const recordingHud = document.getElementById('recording-hud');
+    const timerDisplay = document.getElementById('recording-timer');
+    const transcriptOutput = document.getElementById('transcript-output');
+    const videoInput = document.getElementById('video-input');
+
+    // Initialize Camera on Page Load
+    async function initCamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            console.error('navigator.mediaDevices.getUserMedia is not supported on this origin.');
+            cameraPlaceholder.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-[#f43f5e]"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/><line x1="1" y1="1" x2="23" y2="23"/></svg><div class="text-[0.7rem] font-black uppercase tracking-widest text-[#f43f5e]">Insecure Connection Context Blocked</div><div class="text-[0.6rem] text-text-dim mt-2 max-w-[280px] mx-auto italic uppercase leading-relaxed font-bold tracking-widest">Chrome restricts camera access on IP addresses. Please access via localhost:5000/submit_notes instead.</div>';
+            return;
+        }
+        try {
+            globalStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            videoPreview.srcObject = globalStream;
+            videoPreview.classList.remove('hidden');
+            cameraPlaceholder.classList.add('hidden');
+            videoPreview.play();
+        } catch (err) {
+            console.warn('Camera/Audio initialization failed, attempting video-only stream:', err);
+            try {
+                globalStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoPreview.srcObject = globalStream;
+                videoPreview.classList.remove('hidden');
+                cameraPlaceholder.classList.add('hidden');
+                videoPreview.play();
+            } catch (fallbackErr) {
+                console.error('Camera initialization completely failed:', fallbackErr);
+            }
+        }
+    }
+    
+    window.addEventListener('load', initCamera);
+
+    // Initialize Speech Recognition
+    if ('webkitSpeechRecognition' in window) {
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        
+        recognition.onresult = (event) => {
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript + ' ';
+                }
+            }
+            if (finalTranscript) {
+                transcriptOutput.value += finalTranscript;
+            }
+        };
+    } else {
+        transcriptOutput.value = "Speech recognition not supported in this browser.";
+    }
+
+    startBtn.addEventListener('click', async () => {
+        try {
+            if (!globalStream) {
+                await initCamera();
+            }
+            if (!globalStream) {
+                alert('Cannot start recording: Camera/Microphone access denied.');
+                return;
+            }
+            
+            try {
+                mediaRecorder = new MediaRecorder(globalStream, { mimeType: 'video/webm' });
+            } catch (e) {
+                mediaRecorder = new MediaRecorder(globalStream);
+            }
+            recordedChunks = [];
+            
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            };
+            
+            mediaRecorder.onstop = () => {
+                const mimeType = mediaRecorder.mimeType || 'video/webm';
+                const blob = new Blob(recordedChunks, { type: mimeType });
+                const file = new File([blob], "summary.webm", { type: mimeType });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                videoInput.files = dataTransfer.files;
+                
+                // Keep camera active for preview, just update UI
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                recordingHud.classList.add('opacity-0');
+                startBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg> Re-Record';
+                startBtn.disabled = false;
+                startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                stopBtn.disabled = true;
+                stopBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                if(recognition) recognition.stop();
+                clearInterval(timerInterval);
+            };
+
+            mediaRecorder.start();
+            if(recognition) {
+                transcriptOutput.value = "";
+                recognition.start();
+            }
+            
+            // UI updates
+            startBtn.disabled = true;
+            startBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            stopBtn.disabled = false;
+            stopBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            recordingHud.classList.remove('opacity-0');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Start Timer
+            timeLeft = 120;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    mediaRecorder.stop();
+                }
+            }, 1000);
+            
+        } catch (err) {
+            alert('Error starting recording: ' + err.message);
+        }
+    });
+
+    stopBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+        }
+    });
+
+    function updateTimerDisplay() {
+        const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+        const s = (timeLeft % 60).toString().padStart(2, '0');
+        timerDisplay.textContent = `${m}:${s}`;
+    }
+
+    // Geolocation verification
+    const notesForm = document.getElementById('notesForm');
+    const hiddenLat = document.getElementById('hidden-lat');
+    const hiddenLon = document.getElementById('hidden-lon');
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                hiddenLat.value = position.coords.latitude;
+                hiddenLon.value = position.coords.longitude;
+            },
+            (error) => {
+                console.warn("Unable to fetch location on load:", error);
+            },
+            { enableHighAccuracy: false, timeout: 1500, maximumAge: 60000 }
+        );
+    }
+    
+    notesForm.addEventListener('submit', (e) => {
+        if (!hiddenLat.value || !hiddenLon.value) {
+            e.preventDefault();
+            
+            // Show custom indicator / status message if possible
+            if (typeof scannerStatus !== 'undefined' && scannerStatus) {
+                scannerStatus.textContent = "Acquiring GPS for submission...";
+            }
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    hiddenLat.value = position.coords.latitude;
+                    hiddenLon.value = position.coords.longitude;
+                    notesForm.submit();
+                },
+                (error) => {
+                    alert("GPS Verification Required: Please enable location services in your browser to submit lesson notes.");
+                },
+                { enableHighAccuracy: false, timeout: 2000, maximumAge: 60000 }
+            );
+        }
+    });
+</script>
+{% endblock %}
