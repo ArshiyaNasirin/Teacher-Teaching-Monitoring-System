@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block page_title %}Temporal Refinement{% endblock %}
+
+{% block content %}
+<div class="card mb-10 border-l-4 border-accent p-8 relative overflow-hidden group">
+ <div
+ class="absolute -right-4 -top-4 w-24 h-24 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10 transition-all pointer-events-none">
+ </div>
+ <div class="flex gap-6 items-center relative z-10">
+ <div
+ class="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center text-accent shadow-[0_0_20px_rgba(255,0,122,0.2)] border border-accent/20">
+ <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7"><circle cx="12" cy="12" r="10"/></svg>
+ </div>
+ <div>
+ <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">Temporal Refinement</h3>
+ <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">Modify
+ and synchronize existing schedule parameters</p>
+ </div>
+ </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+ <div class="lg:col-span-8 flex flex-col gap-8">
+ <div class="card p-10 border-t-4 border-accent/30 relative overflow-hidden bg-card-glass">
+ <div class="absolute -right-16 -top-16 w-48 h-48 bg-accent/5 rounded-full blur-2xl pointer-events-none">
+ </div>
+
+ <div
+ class="absolute top-0 right-0 px-6 py-3 bg-accent/10 text-[0.6rem] font-black text-accent tracking-[0.25em] uppercase italic border-bl-2xl border-accent/20">
+ LNK-{{ schedule[0] }}
+ </div>
+
+ <form method="POST" class="flex flex-col gap-8 mt-6 relative z-10">
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Subject
+ Identity</label>
+ <div class="relative group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-accent transition-colors"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+ <select name="teacher_id" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-accent/40 focus:ring-1 focus:ring-accent/10 transition-all text-sm font-bold tracking-widest uppercase italic">
+ {% for teacher in teachers %}
+ <option value="{{ teacher[0] }}" {% if teacher[0]==schedule[1] %}selected{% endif %}
+ class="bg-bg-dark">{{ teacher[1] }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ </div>
+
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Target
+ Sector / Hub</label>
+ <div class="relative group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-accent transition-colors"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+ <input type="text" name="class_name" value="{{ schedule[2] }}" placeholder="e.g. SECTOR-101"
+ required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-accent/40 focus:ring-1 focus:ring-accent/10 transition-all text-sm font-bold tracking-widest uppercase italic placeholder:text-text-main/5">
+ </div>
+ </div>
+
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Temporal
+ Cycle</label>
+ <div class="relative group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-accent transition-colors"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ <select name="day" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-accent/40 focus:ring-1 focus:ring-accent/10 transition-all text-sm font-bold tracking-widest uppercase italic">
+ {% for d in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+ <option value="{{ d }}" {% if d==schedule[3] %}selected{% endif %} class="bg-bg-dark">{{
+ d }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ </div>
+
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Neural
+ Phase</label>
+ <div class="relative group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-accent transition-colors"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+ <select name="session" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-accent/40 focus:ring-1 focus:ring-accent/10 transition-all text-sm font-bold tracking-widest uppercase italic">
+ <option value="AM" {% if schedule[6]=='AM' %}selected{% endif %}
+ class="bg-bg-dark text-accent">Morning Phase (AM)</option>
+ <option value="PM" {% if schedule[6]=='PM' %}selected{% endif %}
+ class="bg-bg-dark text-secondary">Afternoon Phase (PM)</option>
+ </select>
+ </div>
+ </div>
+ </div>
+
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Sync
+ Initiation</label>
+ <div class="relative group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-accent transition-colors"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ <input type="time" name="start_time" value="{{ schedule[4] }}" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-accent/40 focus:ring-1 focus:ring-accent/10 transition-all text-sm font-mono font-bold tracking-widest"
+ style="color-scheme: dark;">
+ </div>
+ </div>
+
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Sync
+ Conclusion</label>
+ <div class="relative group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-accent transition-colors"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ <input type="time" name="end_time" value="{{ schedule[5] }}" required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:border-accent/40 focus:ring-1 focus:ring-accent/10 transition-all text-sm font-mono font-bold tracking-widest"
+ style="color-scheme: dark;">
+ </div>
+ </div>
+ </div>
+
+ <div class="pt-10 flex flex-col sm:flex-row gap-6">
+ <button type="submit"
+ class="btn btn-primary flex-[2] justify-center items-center gap-4 h-16 text-xs font-black rounded-2xl bg-gradient-to-br from-accent to-accent-dark border-none shadow-xl shadow-accent/20 hover:shadow-accent/40 transition-all uppercase tracking-[0.2em] italic">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+ Authorize Refinement
+ </button>
+ <a href="/timetable"
+ class="btn border border-border-glass bg-card-glass h-16 sm:w-48 justify-center text-text-dim rounded-2xl hover:text-text-main hover:bg-card-glass transition-all font-black uppercase tracking-[0.2em] text-[0.65rem] italic">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 mr-2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+ Cancel
+ </a>
+ </div>
+ </form>
+ </div>
+ </div>
+
+ <div class="lg:col-span-4 flex flex-col gap-8">
+ <div class="card p-8 bg-accent/5 border-l-4 border-accent relative overflow-hidden group">
+ <div
+ class="absolute -right-8 -top-8 w-24 h-24 bg-accent/10 rounded-full blur-2xl group-hover:bg-accent/20 transition-all">
+ </div>
+ <h4
+ class="text-[0.65rem] font-black mb-8 flex items-center gap-3 uppercase tracking-[0.25em] text-text-main italic ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 text-accent"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+ Coordinate Analysis
+ </h4>
+ <p
+ class="text-[0.75rem] text-text-dim leading-relaxed font-bold italic relative z-10 m-0 uppercase tracking-widest">
+ Modifying this slot impacts real-time monitoring. The scanner node will automatically recalibrate based
+ on these new temporal coordinates.
+ </p>
+ </div>
+
+ <div class="card p-8 border border-border-glass bg-card-glass group overflow-hidden relative">
+ <div
+ class="absolute -right-10 -bottom-10 w-32 h-32 bg-accent/5 rounded-full blur-3xl group-hover: transition-opacity">
+ </div>
+ <h4
+ class="text-[0.65rem] font-black mb-8 flex items-center gap-3 uppercase tracking-[0.25em] text-text-main italic ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 text-accent"><rect x="9" y="9" width="6" height="6"/><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="9" y1="2" x2="9" y2="9"/><line x1="15" y1="2" x2="15" y2="9"/><line x1="9" y1="15" x2="9" y2="22"/><line x1="15" y1="15" x2="15" y2="22"/><line x1="2" y1="9" x2="9" y2="9"/><line x1="2" y1="15" x2="9" y2="15"/><line x1="15" y1="9" x2="22" y2="9"/><line x1="15" y1="15" x2="22" y2="15"/></svg>
+ Sync Node Metrics
+ </h4>
+ <div class="space-y-6 relative z-10">
+ <div class="flex justify-between items-center text-[0.65rem]">
+ <span class="text-text-dim font-black uppercase tracking-widest ">Status</span>
+ <span
+ class="text-accent font-black uppercase tracking-widest italic shadow-[0_0_10px_#ff007a]">ACTIVE_SYNC</span>
+ </div>
+ <div class="flex justify-between items-center text-[0.65rem]">
+ <span class="text-text-dim font-black uppercase tracking-widest ">Link Type</span>
+ <span class="text-text-main font-black uppercase tracking-widest italic ">Neural-Map</span>
+ </div>
+ <div class="h-1.5 bg-card-glass rounded-full overflow-hidden mt-6 border border-border-glass">
+ <div class="h-full bg-accent w-2/3 shadow-[0_0_10px_#ff007a]"></div>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>
+{% endblock %}

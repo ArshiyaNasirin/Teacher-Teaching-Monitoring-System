@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Aegis: AI-Based Teacher Teaching and Attendance Monitoring System</title>
+ <script>
+ if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+ document.documentElement.classList.add('dark-theme');
+ }
+ </script>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link
+ href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+ rel="stylesheet">
+ <script src="https://cdn.tailwindcss.com"></script>
+ <script src="https://unpkg.com/feather-icons"></script>
+ <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+ <script>
+ tailwind.config = {
+ theme: {
+ extend: {
+ colors: {
+ primary: 'var(--primary)',
+ secondary: 'var(--secondary)',
+ accent: 'var(--accent)',
+ 'bg-deep': 'var(--bg-deep)',
+ 'text-main': 'var(--text-main)',
+ 'text-dim': 'var(--text-dim)',
+ 'card-glass': 'var(--card-glass)',
+ 'border-glass': 'var(--border-glass)',
+ }
+ }
+ }
+ }
+ </script>
+ <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+ <!-- Favicon -->
+ <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/favicon.svg') }}">
+ <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/favicon.svg') }}">
+</head>
+
+<body class="text-text-main flex min-h-screen overflow-x-hidden">
+ <div class="ai-background"></div>
+ <div id="particles-js" class="particles"></div>
+ <aside class="sidebar group">
+ <a href="/" class="brand flex items-center gap-4 mb-16 no-underline relative hover: transition-opacity">
+ <div class="brand-logo w-12 h-12 relative flex items-center justify-center">
+ <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Aegis Logo" class="w-full h-full object-contain">
+ </div>
+ <span class="brand-name text-[1.4rem] font-[800] bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent tracking-[-0.5px]">School Admin</span>
+ </a>
+
+ <ul class="nav-menu list-none flex-grow">
+ {% if current_user.role == 'admin' %}
+ <li class="nav-item mb-2">
+ <a href="/" class="nav-link" id="nav-dashboard">
+ <span class="nav-icon-wrap">
+ <!-- home -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+ </span>
+ <span>Dashboard</span>
+ </a>
+ </li>
+ <li class="nav-item mb-2">
+ <a href="/teachers" class="nav-link" id="nav-teachers">
+ <span class="nav-icon-wrap">
+ <!-- users -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+ </span>
+ <span>Teachers</span>
+ </a>
+ </li>
+ 
+ <li class="nav-item mb-2">
+ <a href="/school_setup" class="nav-link" id="nav-school-setup">
+ <span class="nav-icon-wrap">
+ <!-- map-pin -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+ </span>
+ <span>School Setup</span>
+ </a>
+ </li>
+ {% endif %}
+
+ <li class="nav-item mb-2">
+ <a href="/timetable" class="nav-link" id="nav-classes">
+ <span class="nav-icon-wrap">
+ <!-- calendar -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ </span>
+ <span>Timetable</span>
+ </a>
+ </li>
+
+ <li class="nav-item mb-2">
+ <a href="/face_recognition" class="nav-link" id="nav-attendance">
+ <span class="nav-icon-wrap">
+ <!-- aperture / scan -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="14.31" y1="8" x2="20.05" y2="17.94"/><line x1="9.69" y1="8" x2="21.17" y2="8"/><line x1="7.38" y1="12" x2="13.12" y2="2.06"/><line x1="9.69" y1="16" x2="3.95" y2="6.06"/><line x1="14.31" y1="16" x2="2.83" y2="16"/><line x1="16.62" y1="12" x2="10.88" y2="21.94"/></svg>
+ </span>
+ <span>Face Recognition</span>
+ </a>
+ </li>
+
+ <li class="nav-item mb-2">
+ <a href="/lesson_notes" class="nav-link" id="nav-notes">
+ <span class="nav-icon-wrap">
+ <!-- file-text -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+ </span>
+ <span>Review Lesson Notes</span>
+ </a>
+ </li>
+
+ {% if current_user.role == 'teacher' %}
+ <li class="nav-item mb-2">
+ <a href="/submit_notes" class="nav-link" id="nav-submit-notes">
+ <span class="nav-icon-wrap">
+ <!-- upload -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+ </span>
+ <span>Submit Lesson Notes</span>
+ </a>
+ </li>
+ <li class="nav-item mb-2">
+ <a href="/submit_leave" class="nav-link" id="nav-submit-leave">
+ <span class="nav-icon-wrap">
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ </span>
+ <span>Submit Leave Form</span>
+ </a>
+ </li>
+ <li class="nav-item mb-2">
+ <a href="/my_activity" class="nav-link" id="nav-my-activity">
+ <span class="nav-icon-wrap">
+ <!-- clock -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ </span>
+ <span>My History</span>
+ </a>
+ </li>
+ {% endif %}
+
+ {% if current_user.role == 'admin' %}
+ <li class="nav-item mb-2">
+ <a href="/ahm_dashboard" class="nav-link" id="nav-reports">
+ <span class="nav-icon-wrap">
+ <!-- alert-circle -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+ </span>
+ <span>Late Alerts</span>
+ </a>
+ </li>
+ <li class="nav-item mb-2">
+ <a href="/admin/leaves" class="nav-link" id="nav-admin-leaves">
+ <span class="nav-icon-wrap">
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><polyline points="9 11 12 14 22 4"/></svg>
+ </span>
+ <span>Leave Approvals</span>
+ </a>
+ </li>
+ <li class="nav-item mb-2">
+ <a href="/sessions" class="nav-link" id="nav-transmission">
+ <span class="nav-icon-wrap">
+ <!-- video -->
+ <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+ </span>
+ <span>Classes in Session</span>
+ </a>
+ </li>
+ {% endif %}
+ </ul>
+
+ <div class="sidebar-footer mt-auto pt-6 border-t border-gray-800">
+ <div class="bg-primary/5 p-5 rounded-2xl border border-primary/20 relative overflow-hidden group">
+ <div
+ class="absolute -right-2 -top-2 w-10 h-10 bg-primary/10 rounded-full blur-xl group-hover:bg-primary/20 transition-all">
+ </div>
+ <div class="text-[0.6rem] text-primary font-black mb-2 tracking-[0.2em] uppercase italic ">
+ System Status</div>
+ <div class="flex items-center gap-3">
+ <div class="relative flex h-2 w-2">
+ <span
+ class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success "></span>
+ <span class="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+ </div>
+ <span class="text-[0.7rem] font-black uppercase tracking-widest text-[#d4d4d8] italic">Online</span>
+ </div>
+ </div>
+ </div>
+ </aside>
+
+ <main class="main-content" id="main-content">
+ <div class="header-top flex justify-between items-center mb-14">
+ <div class="page-title">
+ <h1 class="page-title-text text-[2.4rem] font-[900] tracking-tight">
+ {% block page_title %}Admin Dashboard{% endblock %}
+ </h1>
+ </div>
+
+ <div class="flex items-center gap-4">
+ <!-- Theme Toggle -->
+ <button id="theme-toggle" style="cursor: pointer; padding: 0.5rem; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; background: var(--card-glass); border: 1px solid var(--border-glass); color: var(--text-main); transition: var(--transition);">
+ <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+ </button>
+
+ <!-- Profile Dropdown — click to open, click outside to close (native <details>) -->
+ <details class="aegis-details" id="profile-wrapper">
+ <summary class="aegis-summary">
+ <!-- Avatar -->
+ <div class="aegis-avatar">{{ current_user.username[0].upper() }}</div>
+ <div class="aegis-name-wrap">
+ <span class="aegis-name">{{ current_user.username.split('@')[0] | title }}</span>
+ <span class="aegis-role {% if current_user.role == 'admin' %}aegis-role-admin{% else %}aegis-role-teacher{% endif %}">{{ current_user.role | title }}</span>
+ </div>
+ <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="aegis-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+ </summary>
+
+ <!-- Dropdown panel -->
+ <div class="aegis-panel">
+ <div class="aegis-panel-header">
+ <div class="aegis-panel-email">{{ current_user.username }}</div>
+ <div class="aegis-panel-rolebadge {% if current_user.role == 'admin' %}aegis-role-admin{% else %}aegis-role-teacher{% endif %}">{{ current_user.role | title }} Account</div>
+ </div>
+ <div class="aegis-panel-body">
+ <a href="/logout" class="aegis-logout-btn">
+ <span class="aegis-logout-icon">
+ <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff003c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+ </span>
+ <span class="aegis-logout-text">Log Out</span>
+ </a>
+ </div>
+ </div>
+ </details>
+ </div>
+
+ <style>
+ /* Remove default details/summary marker */
+ .aegis-details { position:relative; z-index:1000; list-style:none; }
+ .aegis-details > summary { list-style:none; }
+ .aegis-details > summary::-webkit-details-marker { display:none; }
+
+ /* The clickable trigger pill */
+ .aegis-summary {
+ display: flex; align-items: center; gap: 12px;
+ padding: 8px 18px;
+ background: #1a1a1a;
+ border: 1.5px solid #333333;
+ border-radius: 40px;
+ box-shadow: 0 1px 4px rgba(0,0,0,.06);
+ cursor: pointer;
+ user-select: none;
+ transition: border-color .2s, box-shadow .2s;
+ }
+ .aegis-summary:hover,
+ .aegis-details[open] .aegis-summary {
+ border-color: #ff007f;
+ box-shadow: 0 4px 18px rgba(59,130,246,.14);
+ }
+
+ /* Avatar circle */
+ .aegis-avatar {
+ width:36px; height:36px; border-radius:50%;
+ background: linear-gradient(135deg, #ff007f, #00e5ff);
+ display:flex; align-items:center; justify-content:center;
+ font-size:.8rem; font-weight:900; color:#fff; flex-shrink:0;
+ }
+
+ /* Name + role */
+ .aegis-name-wrap { display:flex; flex-direction:column; text-align:left; }
+ .aegis-name { font-size:.85rem; font-weight:900; color:#ffffff; line-height:1.2; }
+ .aegis-role { font-size:.58rem; font-weight:900; text-transform:uppercase; letter-spacing:.14em; opacity:.85; }
+ .aegis-role-admin { color: #ff007f; }
+ .aegis-role-teacher { color: #00e5ff; }
+
+ /* Chevron rotates when open */
+ .aegis-chevron { transition: transform .25s ease; flex-shrink:0; }
+ .aegis-details[open] .aegis-chevron { transform: rotate(180deg); }
+
+ /* Dropdown panel — hidden by default, shown when <details> is open */
+ .aegis-panel {
+ position: absolute; right:0; top: calc(100% + 8px);
+ width: 230px;
+ background: #1a1a1a;
+ border: 1.5px solid #333333;
+ border-radius: 20px;
+ box-shadow: 0 20px 50px rgba(0,0,0,.13);
+ overflow: hidden;
+ animation: aegisDrop .2s cubic-bezier(.16,1,.3,1) forwards;
+ }
+ @keyframes aegisDrop {
+ from { opacity:0; transform: translateY(-8px) scale(.97); }
+ to { opacity:1; transform: translateY(0) scale(1); }
+ }
+
+ /* Panel header */
+ .aegis-panel-header {
+ padding: 16px 20px 14px;
+ border-bottom: 1px solid #333333;
+ background: linear-gradient(135deg, rgba(59,130,246,.06), rgba(139,92,246,.06));
+ }
+ .aegis-panel-email { font-size:.82rem; font-weight:900; color:#ffffff; word-wrap: break-word; }
+ .aegis-panel-rolebadge{ font-size:.58rem; font-weight:900; text-transform:uppercase; letter-spacing:.15em; margin-top:3px; }
+
+ /* Panel body */
+ .aegis-panel-body { padding: 10px; }
+
+ /* Logout button */
+ .aegis-logout-btn {
+ display:flex; align-items:center; gap:12px;
+ width:100%; padding:12px 14px;
+ background:#3a0000; border:1.5px solid #ff003c;
+ border-radius:14px; text-decoration:none;
+ transition: background .15s, border-color .15s;
+ }
+ .aegis-logout-btn:hover { background:#5a0000; border-color:#ff003c; }
+ .aegis-logout-icon {
+ width:30px; height:30px; background:#1a1a1a;
+ border:1.5px solid #ff003c; border-radius:10px;
+ display:flex; align-items:center; justify-content:center; flex-shrink:0;
+ }
+ .aegis-logout-text { font-size:.8rem; font-weight:900; color:#ff003c; }
+ </style>
+ </div>
+
+ <div class="flash-container">
+ {% with messages = get_flashed_messages() %}
+ {% if messages %}
+ {% for message in messages %}
+ <div class="card p-4 px-6 mb-6 border-l-4 border-primary bg-primary/5">
+ <div class="flex items-center gap-3">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff007f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+ <span class="text-[0.95rem] font-semibold">{{ message }}</span>
+ </div>
+ </div>
+ {% endfor %}
+ {% endif %}
+ {% endwith %}
+ </div>
+
+ {% block content %}{% endblock %}
+ </main>
+
+ <script src="{{ url_for('static', filename='js/core.js') }}"></script>
+ <script>
+ const themeToggleBtn = document.getElementById('theme-toggle');
+ const themeIcon = document.getElementById('theme-icon');
+ 
+ function updateThemeIcon() {
+ if (document.documentElement.classList.contains('dark-theme')) {
+ // Sun icon
+ themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+ } else {
+ // Moon icon
+ themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+ }
+ }
+ 
+ if(themeToggleBtn) {
+ updateThemeIcon();
+ themeToggleBtn.addEventListener('click', function() {
+ document.documentElement.classList.toggle('dark-theme');
+ if (document.documentElement.classList.contains('dark-theme')) {
+ localStorage.setItem('theme', 'dark');
+ } else {
+ localStorage.setItem('theme', 'light');
+ }
+ updateThemeIcon();
+ });
+ }
+ </script>
+ {% if current_user.is_authenticated and current_user.role == 'teacher' %}
+ <script src="{{ url_for('static', filename='js/teacher_recording.js') }}"></script>
+ {% endif %}
+</body>
+
+</html>

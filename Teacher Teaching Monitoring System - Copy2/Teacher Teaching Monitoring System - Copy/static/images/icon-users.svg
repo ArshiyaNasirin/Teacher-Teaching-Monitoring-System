@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="users-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#users-grad)" opacity="0.1" stroke="url(#users-grad)" stroke-width="2"/>
+  <g transform="translate(32,32)">
+    <!-- First person -->
+    <circle cx="-8" cy="-8" r="6" fill="url(#users-grad)"/>
+    <path d="M -14 2 Q -14 8 -8 8 Q -2 8 -2 2" fill="url(#users-grad)" opacity="0.8"/>
+    <!-- Second person -->
+    <circle cx="10" cy="-8" r="6" fill="url(#users-grad)" opacity="0.7"/>
+    <path d="M 4 2 Q 4 8 10 8 Q 16 8 16 2" fill="url(#users-grad)" opacity="0.6"/>
+  </g>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="logo-grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="logo-grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main circle background -->
+  <circle cx="100" cy="100" r="95" fill="rgba(255,255,255,0.08)" stroke="url(#logo-grad1)" stroke-width="2"/>
+  
+  <!-- Center gradient circle -->
+  <circle cx="100" cy="100" r="70" fill="url(#logo-grad1)" opacity="0.1"/>
+  
+  <!-- Book shape -->
+  <g transform="translate(100, 100)">
+    <!-- Left page -->
+    <path d="M -30 -35 L -8 -35 L -8 35 L -30 35 Q -35 30 -35 0 Q -35 -30 -30 -35" 
+          fill="url(#logo-grad1)" opacity="0.9"/>
+    
+    <!-- Right page -->
+    <path d="M 8 -35 L 30 -35 Q 35 -30 35 0 Q 35 30 30 35 L 8 35 Z" 
+          fill="url(#logo-grad2)" opacity="0.85"/>
+    
+    <!-- Spine -->
+    <line x1="-8" y1="-35" x2="-8" y2="35" stroke="white" stroke-width="2" opacity="0.4"/>
+    <line x1="8" y1="-35" x2="8" y2="35" stroke="white" stroke-width="2" opacity="0.4"/>
+    
+    <!-- Page lines - left -->
+    <line x1="-25" y1="-20" x2="-15" y2="-20" stroke="white" stroke-width="1.5" opacity="0.5"/>
+    <line x1="-25" y1="-10" x2="-12" y2="-10" stroke="white" stroke-width="1.5" opacity="0.5"/>
+    <line x1="-25" y1="0" x2="-12" y2="0" stroke="white" stroke-width="1.5" opacity="0.5"/>
+    
+    <!-- Page lines - right -->
+    <line x1="15" y1="-20" x2="25" y2="-20" stroke="white" stroke-width="1.5" opacity="0.6"/>
+    <line x1="12" y1="-10" x2="25" y2="-10" stroke="white" stroke-width="1.5" opacity="0.6"/>
+    <line x1="12" y1="0" x2="25" y2="0" stroke="white" stroke-width="1.5" opacity="0.6"/>
+  </g>
+</svg>

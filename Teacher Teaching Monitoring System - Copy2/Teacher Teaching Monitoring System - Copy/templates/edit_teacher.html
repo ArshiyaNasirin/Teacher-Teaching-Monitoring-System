@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block page_title %}Identity Refinement{% endblock %}
+
+{% block content %}
+<div class="card mb-10 border-l-4 border-primary p-8 relative overflow-hidden group">
+ <div
+ class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all pointer-events-none">
+ </div>
+ <div class="flex flex-wrap justify-between items-center gap-6 relative z-10">
+ <div class="flex gap-6 items-center">
+ <div
+ class="w-14 h-14 rounded-2xl flex items-center justify-center text-primary border border-primary/35 transition-all group-hover:scale-110 group-hover:border-primary/60">
+ <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6"><circle cx="12" cy="12" r="10"/></svg>
+ </div>
+ <div>
+ <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">Edit Teacher</h3>
+ <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">
+ Update teacher name and subject details</p>
+ </div>
+ </div>
+ <div class="bg-primary/10 border border-primary/20 px-6 py-3 rounded-2xl flex items-center gap-4">
+ <span class="w-6 h-6 rounded-md flex items-center justify-center border border-primary/30">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 text-primary"><circle cx="12" cy="12" r="10"/></svg>
+ </span>
+ <span class="text-[0.6rem] text-primary font-black uppercase tracking-[0.25em] ">Teacher ID</span>
+ <span class="text-sm font-mono text-text-main font-black tracking-widest italic">#{{ teacher[0] }}</span>
+ </div>
+ </div>
+</div>
+
+<div class="max-w-3xl mx-auto">
+ <div class="card p-12 relative overflow-hidden bg-card-glass border-t-4 border-primary/30">
+ <div
+ class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none">
+ </div>
+
+ <form method="POST" class="flex flex-col gap-10 relative z-10">
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Identity
+ Name</label>
+ <div class="relative group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+ <input type="text" name="name" value="{{ teacher[1] }}" placeholder="FULL IDENTITY NAME"
+ required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:bg-card-glass focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all outline-none text-sm font-bold tracking-widest uppercase italic placeholder:text-text-main/5">
+ </div>
+ </div>
+
+ <div class="space-y-4">
+ <label
+ class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Subject
+ / Specialization</label>
+ <div class="relative group">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-5 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-primary transition-colors"><circle cx="12" cy="12" r="10"/></svg>
+ <input type="text" name="subject" value="{{ teacher[2] }}" placeholder="e.g. Mathematics"
+ required
+ class="pl-14 bg-card-glass border-border-glass h-14 w-full rounded-2xl text-text-main focus:bg-card-glass focus:border-primary/40 focus:ring-1 focus:ring-primary/10 transition-all outline-none text-sm font-bold tracking-widest uppercase italic placeholder:text-text-main/5">
+ </div>
+ </div>
+ </div>
+
+ <div class="pt-6 flex flex-col sm:flex-row gap-6">
+ <button type="submit"
+ class="btn btn-primary flex-[2] justify-center items-center gap-4 h-16 text-xs font-black rounded-2xl bg-gradient-to-br from-primary to-primary-dark shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all uppercase tracking-[0.2em] italic">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5"><circle cx="12" cy="12" r="10"/></svg>
+ Save Changes
+ </button>
+ <a href="/teachers"
+ class="btn bg-card-glass border border-border-glass flex-1 justify-center items-center h-16 text-xs font-black text-text-dim rounded-2xl hover:bg-card-glass hover:text-text-main transition-all uppercase tracking-[0.2em] italic">
+ <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 mr-2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+ Back
+ </a>
+ </div>
+ </form>
+ </div>
+
+ <!-- Alert Box -->
+ <div class="card bg-accent/5 border border-accent/20 p-8 mt-12 relative group overflow-hidden">
+ <div class="absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent "></div>
+ <div class="relative z-10 flex gap-6">
+ <div
+ class="w-14 h-14 bg-accent/10 rounded-2xl flex items-center justify-center text-accent shrink-0 shadow-lg shadow-accent/5 border border-accent/20">
+ <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7"><circle cx="12" cy="12" r="10"/></svg>
+ </div>
+ <div>
+ <h4
+ class="text-[0.65rem] font-black mb-3 text-text-main uppercase tracking-[0.3em] italic flex items-center gap-3 ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 text-accent"><circle cx="12" cy="12" r="10"/></svg>
+ Photo Cannot Be Changed Here
+ </h4>
+ <p
+ class="text-[0.75rem] text-text-dim leading-relaxed font-bold italic m-0 uppercase tracking-widest">
+ Face photo data is fixed after registration. To update the <span class="text-accent">Face
+ Photo</span>, you must <span class="text-accent underline">delete this teacher</span> and
+ re-register.
+ </p>
+ </div>
+ </div>
+ </div>
+</div>
+{% endblock %}
