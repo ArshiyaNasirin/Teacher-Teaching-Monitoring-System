@@ -223,9 +223,11 @@ def init_db():
 
     c.execute('SELECT COUNT(*) FROM school_details')
     if c.fetchone()[0] == 0:
-        c.execute('INSERT INTO school_details (name, latitude, longitude, radius, school_start_time, is_registered) VALUES (?, ?, ?, ?, ?, 0)',
-                  ("Kongu Engineering College", 11.2742, 77.6070, 100.0, "08:30", 0))
-                  
+        c.execute(
+            'INSERT INTO school_details (name, latitude, longitude, radius, school_start_time) VALUES (?, ?, ?, ?, ?)',
+            ("Kongu Engineering College", 11.2742, 77.6070, 100.0, "08:30")
+        )
+
     c.execute('''CREATE TABLE IF NOT EXISTS users
                  (id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT, role TEXT DEFAULT 'teacher')''')
                  
@@ -503,16 +505,33 @@ def train_model(force_retrain=False):
         print("[TRAIN] No valid face data found. Model reset and cleared from memory.")
     is_model_loaded = True
 
-# Automatically initialize DB schema on serverless startup (e.g. Vercel)
-try:
-    init_db()
-except Exception as e:
-    print("[STARTUP] Database init error:", e)
+def initialize_runtime():
+    """Initialize the local database and warm the model only in non-serverless runs.
+    Vercel executes code in short-lived instances, so we avoid expensive startup work
+    there and rely on lazy initialization on first real request handling.
+    """
+    try:
+        init_db()
+    except Exception as e:
+        print("[STARTUP] Database init error:", e)
 
-try:
-    train_model()
-except Exception as e:
-    print("[STARTUP] Model train error:", e)
+    if IS_VERCEL:
+        print("[STARTUP] Skipping biometric model warmup in Vercel serverless mode.")
+        return
+
+    try:
+        train_model()
+    except Exception as e:
+        print("[STARTUP] Model train error:", e)
+
+
+# For local development, initialize once when the module is launched directly.
+# In Vercel, keep the app import lightweight and avoid model warmup at cold start.
+if not IS_VERCEL and __name__ != '__main__':
+    try:
+        initialize_runtime()
+    except Exception as e:
+        print("[STARTUP] Runtime bootstrap error:", e)
 
 def validate_password_strength(password):
     if len(password) < 8:
@@ -2564,7 +2583,5 @@ def delete_leave(leave_id):
     return redirect(url_for('admin_leaves'))
 
 if __name__ == '__main__':
-    init_db()
-    import threading
-    threading.Thread(target=train_model, daemon=True).start()
-    app.run(debug=True)
+    initialize_runtime()
+    app.run(debug=False, host='0.0.0.0', port=5000)
