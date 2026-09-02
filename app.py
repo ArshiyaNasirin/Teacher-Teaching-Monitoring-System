@@ -22,7 +22,19 @@ Request.max_form_memory_size = 100 * 1024 * 1024
 Request.max_content_length = 100 * 1024 * 1024
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, 'school_monitoring.db')
+IS_VERCEL = bool(os.environ.get('VERCEL'))
+
+if IS_VERCEL:
+    DB_PATH = '/tmp/school_monitoring.db'
+    bundled_db = os.path.join(BASE_DIR, 'school_monitoring.db')
+    if os.path.exists(bundled_db) and not os.path.exists(DB_PATH):
+        try:
+            import shutil
+            shutil.copy2(bundled_db, DB_PATH)
+        except Exception as e:
+            print("Error copying bundled db:", e)
+else:
+    DB_PATH = os.path.join(BASE_DIR, 'school_monitoring.db')
 
 app = Flask(__name__)
 app.secret_key = 'face_recognition_system'
@@ -382,7 +394,17 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-MODEL_YML_PATH = os.path.join(BASE_DIR, 'biometric_model.yml')
+if IS_VERCEL:
+    MODEL_YML_PATH = '/tmp/biometric_model.yml'
+    bundled_model = os.path.join(BASE_DIR, 'biometric_model.yml')
+    if os.path.exists(bundled_model) and not os.path.exists(MODEL_YML_PATH):
+        try:
+            import shutil
+            shutil.copy2(bundled_model, MODEL_YML_PATH)
+        except Exception as e:
+            print("Error copying bundled model:", e)
+else:
+    MODEL_YML_PATH = os.path.join(BASE_DIR, 'biometric_model.yml')
 
 def train_model(force_retrain=False):
     """Train the LBPH model on startup or every registration.
@@ -480,6 +502,17 @@ def train_model(force_retrain=False):
         print("[TRAIN] No face data available. Reset recognizer and removed cached model.")
         print("[TRAIN] No valid face data found. Model reset and cleared from memory.")
     is_model_loaded = True
+
+# Automatically initialize DB schema on serverless startup (e.g. Vercel)
+try:
+    init_db()
+except Exception as e:
+    print("[STARTUP] Database init error:", e)
+
+try:
+    train_model()
+except Exception as e:
+    print("[STARTUP] Model train error:", e)
 
 def validate_password_strength(password):
     if len(password) < 8:
