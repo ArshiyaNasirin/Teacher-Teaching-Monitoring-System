@@ -1,4 +1,44 @@
-.venv/ 
-__pycache__/ 
-*.pyc 
-.git/ 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Database
+*.db
+*.sqlite3
+school_monitoring.db
+
+# Large model files
+*.yml
+biometric_model.yml
+
+# Temporary files
+temp_*.jpg
+temp_capture.jpg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment variables
+.env
+.flaskenv
+
+# Git
+.git/

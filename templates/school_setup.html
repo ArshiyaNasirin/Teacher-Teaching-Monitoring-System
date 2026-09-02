@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+
+{% block page_title %}School Setup{% endblock %}
+
+{% block content %}
+<div class="card mb-10 border-l-4 border-[#00e5ff] p-8 relative overflow-hidden group">
+    <div class="absolute -right-4 -top-4 w-24 h-24 bg-[#00e5ff]/5 rounded-full blur-2xl group-hover:bg-[#00e5ff]/10 transition-all pointer-events-none"></div>
+    <div class="flex flex-col sm:flex-row gap-6 items-center relative z-10">
+        <div class="w-16 h-16 bg-[#00e5ff]/10 rounded-2xl flex items-center justify-center text-[#00e5ff] shadow-[0_0_20px_rgba(0,229,255,0.25)] border border-[#00e5ff]/20 transition-all group-hover:scale-110">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+            <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">School Setup & Geofencing</h3>
+            <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">Configure secure GPS boundary coordinates andAllowed radius limits</p>
+        </div>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="mb-8 p-6 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-semibold flex items-center gap-4 animate-pulse">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-teal-400"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Configuration Form -->
+    <div class="lg:col-span-2">
+        <div class="card p-10 border-t-4 border-[#00e5ff] relative overflow-hidden bg-card-glass">
+            <div class="absolute -top-10 -right-10 w-48 h-48 bg-[#00e5ff]/5 rounded-full blur-3xl"></div>
+            
+            <form method="POST" class="flex flex-col gap-8 relative z-10">
+                {% if school and school[5] == 1 %}
+                <div class="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400 shrink-0"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span>SECURE LOCATION LOCKED: {{ school[0] }} has been chosen and is securely locked. The school coordinates cannot be changed.</span>
+                </div>
+                {% else %}
+                <div class="p-5 rounded-2xl bg-[#00e5ff]/10 border border-[#00e5ff]/20 text-[#00e5ff] text-xs font-semibold flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-[#00e5ff] shrink-0"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span>LOCATION CONFIGURATION UNLOCKED: You can modify school coordinates, radius, timings, and geofence parameters.</span>
+                </div>
+                {% endif %}
+
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Institution Name</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-[#00e5ff] transition-colors"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                        <input type="text" name="name" required placeholder="Enter School Name" value="{{ school[0] if school else '' }}"
+                            {% if school and school[5] == 1 %}readonly style="opacity: 0.6; cursor: not-allowed;" class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-dim transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% else %}class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-[#00e5ff]/40 focus:ring-1 focus:ring-[#00e5ff]/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% endif %}>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Latitude (GPS)</label>
+                        <div class="relative group">
+                            <input type="number" step="any" name="latitude" id="input-lat" required placeholder="e.g. 11.27420" value="{{ school[1] if school else '' }}"
+                                {% if school and school[5] == 1 %}readonly style="opacity: 0.6; cursor: not-allowed;" class="pl-6 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-dim transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% else %}class="pl-6 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-[#00e5ff]/40 focus:ring-1 focus:ring-[#00e5ff]/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% endif %}>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Longitude (GPS)</label>
+                        <div class="relative group">
+                            <input type="number" step="any" name="longitude" id="input-lon" required placeholder="e.g. 77.60700" value="{{ school[2] if school else '' }}"
+                                {% if school and school[5] == 1 %}readonly style="opacity: 0.6; cursor: not-allowed;" class="pl-6 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-dim transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% else %}class="pl-6 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-[#00e5ff]/40 focus:ring-1 focus:ring-[#00e5ff]/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% endif %}>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Allowed Geofence Boundary Radius (Meters)</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-[#00e5ff] transition-colors"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        <input type="number" name="radius" required placeholder="Allowed deviation in meters, e.g., 100" value="{{ school[3] if school else 100 }}"
+                            {% if school and school[5] == 1 %}readonly style="opacity: 0.6; cursor: not-allowed;" class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-dim transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% else %}class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-[#00e5ff]/40 focus:ring-1 focus:ring-[#00e5ff]/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% endif %}>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">School Start Time (Daily Leave Submission Deadline)</label>
+                    <div class="relative group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="absolute left-6 top-1/2 -translate-y-1/2 w-4 text-text-dim group-focus-within:text-[#00e5ff] transition-colors"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <input type="time" name="school_start_time" required value="{{ school[4] if school else '08:30' }}"
+                            {% if school and school[5] == 1 %}readonly style="opacity: 0.6; cursor: not-allowed;" class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-dim transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% else %}class="pl-16 bg-card-glass border-border-glass h-16 w-full rounded-2xl text-text-main focus:border-[#00e5ff]/40 focus:ring-1 focus:ring-[#00e5ff]/10 transition-all text-sm font-bold uppercase tracking-widest italic shadow-inner"{% endif %}>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.25em] mb-2 block italic">Strict Geofencing Protection</label>
+                    <div class="flex items-center gap-4 bg-white/5 p-6 rounded-2xl border border-white/5 transition-all hover:bg-white/[0.08]">
+                        <input type="checkbox" name="strict_geofence" id="strict-geofence-checkbox" value="1"
+                            {% if school and school[6] == 1 %}checked{% endif %}
+                            {% if school and school[5] == 1 %}disabled class="checkbox checkbox-accent opacity-60 cursor-not-allowed"{% else %}class="checkbox checkbox-accent cursor-pointer"{% endif %}>
+                        <div>
+                            <div class="text-[0.7rem] font-black text-text-main uppercase tracking-widest italic">Enforce Geofence Verification for All</div>
+                            <div class="text-[0.6rem] text-text-dim mt-1 font-bold italic uppercase tracking-wider">When enabled, attendance check-in and lesson notes submission will block users outside the geofence boundary.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex flex-col sm:flex-row gap-6">
+                    {% if school and school[5] == 1 %}
+                    <button type="submit" name="action" value="unlock"
+                        class="btn border border-red-500/20 bg-red-500/10 text-red-400 flex-1 justify-center items-center h-16 rounded-2xl hover:bg-red-500/20 transition-all font-black uppercase tracking-[0.2em] text-[0.65rem] italic text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 mr-2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Unlock Location Setup
+                    </button>
+                    {% else %}
+                    <button type="button" id="btn-sync-coords"
+                        class="btn border border-[#00e5ff]/20 bg-[#00e5ff]/10 text-[#00e5ff] flex-1 justify-center items-center h-16 rounded-2xl hover:bg-[#00e5ff]/20 transition-all font-black uppercase tracking-[0.2em] text-[0.65rem] italic text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 mr-2 animate-pulse"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Sync My Location
+                    </button>
+
+                    <button type="submit" name="action" value="save"
+                        class="btn flex-[2] justify-center items-center gap-4 h-16 text-xs font-black rounded-2xl bg-gradient-to-br from-[#00e5ff] to-[#008ba3] border-none shadow-xl shadow-[#00e5ff]/20 hover:shadow-[#00e5ff]/40 hover:-translate-y-1 transition-all uppercase tracking-[0.2em] italic text-text-main text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Save Configuration
+                    </button>
+
+                    {% if school %}
+                    <button type="submit" name="action" value="lock"
+                        class="btn border border-amber-500/20 bg-amber-500/10 text-amber-400 flex-1 justify-center items-center h-16 rounded-2xl hover:bg-amber-500/20 transition-all font-black uppercase tracking-[0.2em] text-[0.65rem] italic text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 mr-2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Lock Setup
+                    </button>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Active Boundary Status Widget -->
+    <div>
+        <div class="card p-8 border-2 border-border-glass bg-card-glass/40 h-full flex flex-col justify-between">
+            <div>
+                <h4 class="text-xs font-black text-text-dim uppercase tracking-[0.3em] italic mb-6">Current Coordinates</h4>
+                <div class="space-y-6">
+                    <div class="p-6 bg-white/5 rounded-2xl border border-white/5">
+                        <div class="text-[0.6rem] font-black uppercase tracking-widest text-[#00e5ff] mb-2">Latitude</div>
+                        <div class="text-3xl font-black italic tracking-tighter text-text-main" id="display-lat">
+                            {{ "%.6f" | format(school[1]) if school else 'Not Set' }}
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 bg-white/5 rounded-2xl border border-white/5">
+                        <div class="text-[0.6rem] font-black uppercase tracking-widest text-[#00e5ff] mb-2">Longitude</div>
+                        <div class="text-3xl font-black italic tracking-tighter text-text-main" id="display-lon">
+                            {{ "%.6f" | format(school[2]) if school else 'Not Set' }}
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-[#00e5ff]/5 rounded-2xl border border-[#00e5ff]/20">
+                        <div class="text-[0.6rem] font-black uppercase tracking-widest text-[#00e5ff] mb-4 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3 text-[#00e5ff]"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Decoded Location
+                        </div>
+                        <div class="space-y-2.5">
+                            <div class="flex justify-between items-center text-[0.7rem] font-bold">
+                                <span class="text-text-dim uppercase tracking-wider">Town/Area:</span>
+                                <span id="loc-town" class="text-text-main uppercase font-black italic">Awaiting Coords</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[0.7rem] font-bold">
+                                <span class="text-text-dim uppercase tracking-wider">City:</span>
+                                <span id="loc-city" class="text-text-main uppercase font-black italic">Awaiting Coords</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[0.7rem] font-bold">
+                                <span class="text-text-dim uppercase tracking-wider">District:</span>
+                                <span id="loc-district" class="text-text-main uppercase font-black italic">Awaiting Coords</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[0.7rem] font-bold">
+                                <span class="text-text-dim uppercase tracking-wider">State:</span>
+                                <span id="loc-state" class="text-text-main uppercase font-black italic text-[#00e5ff]">Awaiting Coords</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 bg-white/5 rounded-2xl border border-white/5">
+                        <div class="text-[0.6rem] font-black uppercase tracking-widest text-[#00e5ff] mb-2">Allowed Range</div>
+                        <div class="text-3xl font-black italic tracking-tighter text-text-main">
+                            {{ school[3] if school else '100' }} <span class="text-xs text-text-dim font-bold">Meters</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-white/10 text-center">
+                <div class="text-[0.6rem] font-black uppercase tracking-[0.3em] text-text-dim italic">Sentinel Geofencing</div>
+                <div class="text-xs font-bold text-[#00e5ff] mt-2 animate-pulse">ACTIVE SECURITY SHIELD</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const syncBtn = document.getElementById('btn-sync-coords');
+    const inputLat = document.getElementById('input-lat');
+    const inputLon = document.getElementById('input-lon');
+    const displayLat = document.getElementById('display-lat');
+    const displayLon = document.getElementById('display-lon');
+    
+    if (syncBtn) {
+        syncBtn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by your browser.");
+                return;
+            }
+            
+            syncBtn.disabled = true;
+            const originalText = syncBtn.innerHTML;
+            syncBtn.innerHTML = `
+                <div class="w-4 h-4 border-2 border-[#00e5ff] border-t-transparent rounded-full animate-spin mr-2"></div>
+                Syncing GPS...
+            `;
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    inputLat.value = lat.toFixed(6);
+                    inputLon.value = lon.toFixed(6);
+                    displayLat.textContent = lat.toFixed(6);
+                    displayLon.textContent = lon.toFixed(6);
+                    
+                    syncBtn.disabled = false;
+                    syncBtn.innerHTML = originalText;
+                    alert("GPS coordinates synchronized successfully!");
+                    
+                    // Decoded Location Trigger
+                    updateDecodedLocation(lat, lon);
+                },
+                (error) => {
+                    syncBtn.disabled = false;
+                    syncBtn.innerHTML = originalText;
+                    let errMsg = "Unable to fetch current GPS location.";
+                    if (error.code === error.PERMISSION_DENIED) {
+                        errMsg = "Permission denied. Please allow location access in your browser settings.";
+                    }
+                    alert(errMsg);
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
+            );
+        });
+    }
+
+    // Decoded Physical Location Functionality
+    function updateDecodedLocation(lat, lon) {
+        const townEl = document.getElementById('loc-town');
+        const cityEl = document.getElementById('loc-city');
+        const districtEl = document.getElementById('loc-district');
+        const stateEl = document.getElementById('loc-state');
+
+        if (!lat || !lon) {
+            if (townEl) townEl.textContent = 'Not Set';
+            if (cityEl) cityEl.textContent = 'Not Set';
+            if (districtEl) districtEl.textContent = 'Not Set';
+            if (stateEl) stateEl.textContent = 'Not Set';
+            return;
+        }
+
+        if (townEl) townEl.textContent = 'DECODING...';
+        if (cityEl) cityEl.textContent = 'DECODING...';
+        if (districtEl) districtEl.textContent = 'DECODING...';
+        if (stateEl) stateEl.textContent = 'DECODING...';
+
+        fetch('/get_place_details', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ latitude: lat, longitude: lon })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (townEl) townEl.textContent = data.town;
+                if (cityEl) cityEl.textContent = data.city;
+                if (districtEl) districtEl.textContent = data.district;
+                if (stateEl) stateEl.textContent = data.state;
+            } else {
+                const errText = 'LOOKUP FAILED';
+                if (townEl) townEl.textContent = errText;
+                if (cityEl) cityEl.textContent = errText;
+                if (districtEl) districtEl.textContent = errText;
+                if (stateEl) stateEl.textContent = errText;
+            }
+        })
+        .catch(err => {
+            const errText = 'OFFLINE';
+            if (townEl) townEl.textContent = errText;
+            if (cityEl) cityEl.textContent = errText;
+            if (districtEl) districtEl.textContent = errText;
+            if (stateEl) stateEl.textContent = errText;
+        });
+    }
+
+    // Initial Geocoding run on load
+    if (inputLat && inputLon && inputLat.value && inputLon.value) {
+        updateDecodedLocation(parseFloat(inputLat.value), parseFloat(inputLon.value));
+    }
+
+    // Dynamic keyup/change listeners for manual coordinate inputs
+    const handleCoordChange = () => {
+        const latVal = parseFloat(inputLat.value);
+        const lonVal = parseFloat(inputLon.value);
+        if (!isNaN(latVal) && !isNaN(lonVal)) {
+            displayLat.textContent = latVal.toFixed(6);
+            displayLon.textContent = lonVal.toFixed(6);
+            updateDecodedLocation(latVal, lonVal);
+        }
+    };
+    if (inputLat && inputLon) {
+        inputLat.addEventListener('input', handleCoordChange);
+        inputLon.addEventListener('input', handleCoordChange);
+    }
+
+});
+</script>
+{% endblock %}

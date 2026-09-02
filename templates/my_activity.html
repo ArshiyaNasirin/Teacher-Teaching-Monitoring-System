@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block page_title %}My Activity{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="card mb-10 border-l-4 border-primary p-8 relative overflow-hidden group">
+ <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all pointer-events-none"></div>
+ <div class="flex gap-6 items-center relative z-10">
+ <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-[0_0_20px_rgba(59,130,246,0.2)] border border-primary/20 transition-all group-hover:scale-110">
+ <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ </div>
+ <div>
+ <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">My Activity</h3>
+ <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">Your personal attendance and lesson note history</p>
+ </div>
+ </div>
+</div>
+
+<!-- Class Recording Summaries (2-Minute Lessons) -->
+<div class="card p-8 bg-card-glass border border-border-glass relative overflow-hidden group mb-8">
+    <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#00e5ff]/5 rounded-full blur-2xl group-hover:bg-[#00e5ff]/10 transition-all pointer-events-none"></div>
+
+    <h3 class="text-[0.7rem] font-black text-text-main mb-8 uppercase tracking-[0.25em] italic flex items-center gap-3 relative z-10">
+        <span class="w-8 h-8 bg-[#00e5ff]/10 rounded-xl flex items-center justify-center border border-[#00e5ff]/20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 text-[#00e5ff]"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </span>
+        My Class Video Summaries
+    </h3>
+
+    <div class="space-y-6 relative z-10">
+        {% if sessions %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for sess in sessions %}
+            <div class="p-6 rounded-2xl border border-border-glass bg-card-glass/30 hover:border-[#00e5ff]/30 hover:bg-[#00e5ff]/[0.01] transition-all duration-300 flex flex-col justify-between gap-6 group/video">
+                <div>
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <div class="font-black text-text-main text-sm italic tracking-tight uppercase">
+                                {{ sess[1] }}
+                            </div>
+                            <div class="text-[0.55rem] text-text-dim font-black uppercase tracking-widest mt-0.5">
+                                Topic: <span class="text-text-main font-bold normal-case">{{ sess[2] }}</span>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#00e5ff]/10 text-[#00e5ff] text-[0.55rem] font-black rounded-lg border border-[#00e5ff]/20 uppercase tracking-widest italic shrink-0">
+                            {{ sess[7] }}
+                        </span>
+                    </div>
+
+                    <!-- Modern styled video player -->
+                    <div class="relative rounded-xl overflow-hidden bg-black/50 border border-border-glass/40 shadow-inner my-4 group-hover/video:border-[#00e5ff]/20 transition-all aspect-video w-full flex items-center justify-center">
+                        <video class="w-full h-full object-contain" controls>
+                            <source src="{{ sess[5] }}" type="video/webm">
+                            <source src="{{ sess[5] }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+
+                    {% if sess[6] %}
+                    <div class="p-3 bg-white/5 rounded-xl border border-white/5 mb-4">
+                        <div class="text-[0.55rem] text-[#00e5ff] font-black uppercase tracking-widest mb-1 italic">Generated Transcript</div>
+                        <p class="text-[0.65rem] text-text-dim font-bold m-0 leading-relaxed italic">"{{ sess[6] }}"</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="border-t border-border-glass/40 pt-4 flex flex-col sm:flex-row gap-4 justify-between items-stretch">
+                    <!-- Delete Summary Form -->
+                    <form method="POST" action="/delete_session_recording/{{ sess[0] }}" class="w-full sm:w-auto flex shrink-0">
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this recorded class summary?')"
+                            class="btn h-11 px-5 w-full justify-center items-center gap-2 rounded-xl text-[0.55rem] font-black uppercase tracking-widest italic bg-red-500/10 hover:bg-red-500 border border-red-500/20 hover:border-red-500 text-red-400 hover:text-white transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-3"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                            Delete Video
+                        </button>
+                    </form>
+
+                    <!-- Re-upload Summary Form -->
+                    <form method="POST" action="/reupload_session_recording/{{ sess[0] }}" enctype="multipart/form-data" class="w-full flex flex-col sm:flex-row gap-3 items-center">
+                        <div class="relative w-full">
+                            <input type="file" name="video" accept="video/*" required
+                                class="w-full h-11 bg-white/5 border border-dashed border-border-glass hover:border-[#00e5ff]/30 text-[0.6rem] font-bold text-text-dim rounded-xl px-3 transition-all cursor-pointer file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[0.5rem] file:font-black file:uppercase file:bg-[#00e5ff]/10 file:text-[#00e5ff] hover:file:bg-[#00e5ff]/20">
+                        </div>
+                        <button type="submit"
+                            class="btn h-11 px-5 w-full sm:w-auto shrink-0 justify-center items-center gap-2 rounded-xl text-[0.55rem] font-black uppercase tracking-widest italic bg-[#00e5ff]/10 hover:bg-[#00e5ff] border border-[#00e5ff]/20 hover:border-[#00e5ff] text-[#00e5ff] hover:text-[#050505] transition-all">
+                            Re-upload
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-16 border-2 border-dashed border-border-glass rounded-[28px] bg-card-glass">
+            <div class="w-14 h-14 bg-[#050505] rounded-2xl flex items-center justify-center mx-auto mb-5 border border-border-glass text-text-dim">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </div>
+            <p class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.3em] ">No recorded video summaries found</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+ <!-- Attendance History -->
+ <div class="card p-8 bg-card-glass border border-border-glass relative overflow-hidden group">
+ <div class="absolute -right-8 -top-8 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all pointer-events-none"></div>
+
+ <h3 class="text-[0.65rem] font-black text-text-main mb-8 uppercase tracking-[0.25em] italic flex items-center gap-3 relative z-10">
+ <span class="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 text-primary"><circle cx="12" cy="12" r="10"/><line x1="14.31" y1="8" x2="20.05" y2="17.94"/><line x1="9.69" y1="8" x2="21.17" y2="8"/><line x1="7.38" y1="12" x2="13.12" y2="2.06"/><line x1="9.69" y1="16" x2="3.95" y2="6.06"/><line x1="14.31" y1="16" x2="2.83" y2="16"/><line x1="16.62" y1="12" x2="10.88" y2="21.94"/></svg>
+ </span>
+ Face Scan History
+ </h3>
+
+ <div class="space-y-4 relative z-10">
+ {% if attendance %}
+ {% for log in attendance %}
+ <div class="flex items-center justify-between p-5 bg-card-glass rounded-2xl border border-border-glass hover:border-primary/30 hover:bg-primary/[0.02] transition-all duration-300 group/row">
+ <div class="flex items-center gap-4">
+ <div class="w-10 h-10 bg-[#050505] rounded-xl flex items-center justify-center border border-border-glass group-hover/row:border-primary/30 group-hover/row:text-primary text-text-dim overflow-hidden transition-all shrink-0">
+ {% if log[5] %}
+ <img src="{{ log[5] if 'data:image' in log[5] else 'data:image/jpeg;base64,' ~ log[5] }}" class="w-full h-full object-cover">
+ {% else %}
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+ {% endif %}
+ </div>
+ <div>
+ <div class="font-black text-text-main text-sm italic tracking-tight group-hover/row:translate-x-1 transition-transform">
+ {{ log[3] }}
+ <span class="text-[0.6rem] text-text-dim font-medium ml-1 not-italic">(Classroom)</span>
+ </div>
+ <div class="text-[0.6rem] text-text-dim font-black uppercase tracking-widest mt-0.5 flex items-center gap-2 ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+ <span>{{ log[1] }}</span>
+ <span class="">•</span>
+ <span>{{ log[4] }} Session</span>
+ {% if log[6] %}
+ <span class="">•</span>
+ <span class="text-success">Match: {{ log[6] }}%</span>
+ {% endif %}
+ </div>
+ </div>
+ </div>
+ <div class="text-right shrink-0">
+ {% if log[2] == 'On Time' %}
+ <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 text-[0.6rem] font-black rounded-xl border border-green-200 uppercase tracking-widest">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> On Time
+ </span>
+ {% else %}
+ <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-yellow-50 text-yellow-700 text-[0.6rem] font-black rounded-xl border border-yellow-200 uppercase tracking-widest">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Late
+ </span>
+ {% endif %}
+ <div class="text-[0.55rem] text-text-dim mt-1.5 font-mono">{{ log[0] }}</div>
+ </div>
+ </div>
+ {% endfor %}
+ {% else %}
+ <div class="text-center py-16 border-2 border-dashed border-border-glass rounded-[28px] bg-card-glass">
+ <div class="w-14 h-14 bg-[#050505] rounded-2xl flex items-center justify-center mx-auto mb-5 border border-border-glass text-text-dim">
+ <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6"><circle cx="12" cy="12" r="10"/><line x1="14.31" y1="8" x2="20.05" y2="17.94"/><line x1="9.69" y1="8" x2="21.17" y2="8"/><line x1="7.38" y1="12" x2="13.12" y2="2.06"/><line x1="9.69" y1="16" x2="3.95" y2="6.06"/><line x1="14.31" y1="16" x2="2.83" y2="16"/><line x1="16.62" y1="12" x2="10.88" y2="21.94"/></svg>
+ </div>
+ <p class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.3em] ">No face scans recorded yet</p>
+ </div>
+ {% endif %}
+ </div>
+ </div>
+
+ <!-- Notes History -->
+ <div class="card p-8 bg-card-glass border border-border-glass relative overflow-hidden group">
+ <div class="absolute -right-8 -top-8 w-32 h-32 bg-secondary/5 rounded-full blur-2xl group-hover:bg-secondary/10 transition-all pointer-events-none"></div>
+
+ <h3 class="text-[0.65rem] font-black text-text-main mb-8 uppercase tracking-[0.25em] italic flex items-center gap-3 relative z-10">
+ <span class="w-9 h-9 bg-secondary/10 rounded-xl flex items-center justify-center border border-secondary/20">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 text-secondary"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+ </span>
+ Submitted Lesson Notes
+ </h3>
+
+ <div class="space-y-4 relative z-10">
+ {% if notes %}
+ {% for note in notes %}
+ <div class="p-5 rounded-2xl border border-border-glass bg-card-glass hover:border-secondary/30 hover:bg-secondary/[0.02] transition-all duration-300 group/card">
+ <div class="flex justify-between items-start mb-3">
+ <div class="flex items-center gap-3">
+ <div class="w-9 h-9 bg-secondary/10 rounded-xl flex items-center justify-center border border-secondary/20 shrink-0">
+ <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 text-secondary"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+ </div>
+ <div class="font-black text-text-main text-sm italic tracking-tight group-hover/card:translate-x-0.5 transition-transform">
+ {{ note[3] }}
+ </div>
+ </div>
+ <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-secondary/8 text-secondary text-[0.55rem] font-black rounded-lg border border-secondary/20 uppercase tracking-widest shrink-0 ml-2">
+ <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-2.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+ {{ note[2] }}
+ </span>
+ </div>
+ <p class="text-[0.75rem] text-text-dim mb-4 leading-relaxed font-medium italic pl-12">{{ note[4][:100] }}...</p>
+ <div class="flex items-center gap-3 text-[0.6rem] text-text-dim font-black uppercase tracking-widest pl-12">
+ <span class="flex items-center gap-1.5">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+ {{ note[1] }}
+ </span>
+ <span class="">•</span>
+ <span class="flex items-center gap-1.5 text-green-600">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+ {{ note[5] }}
+ </span>
+ </div>
+ </div>
+ {% endfor %}
+ {% else %}
+ <div class="text-center py-16 border-2 border-dashed border-border-glass rounded-[28px] bg-card-glass">
+ <div class="w-14 h-14 bg-[#050505] rounded-2xl flex items-center justify-center mx-auto mb-5 border border-border-glass text-text-dim">
+ <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+ </div>
+ <p class="text-[0.65rem] font-black text-text-dim uppercase tracking-[0.3em] ">No lesson notes submitted yet</p>
+ </div>
+ {% endif %}
+ </div>
+ </div>
+
+</div>
+{% endblock %}

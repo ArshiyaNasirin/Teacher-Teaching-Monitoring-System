@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block page_title %}Staff Registry{% endblock %}
+
+{% block content %}
+{% set new_creds = session.pop('new_teacher_creds', None) %}
+{% if new_creds %}
+<div class="card border-l-4 border-green-500 bg-green-500/5 p-8 mb-10 relative overflow-hidden group">
+  <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-500/5 rounded-full blur-2xl group-hover:bg-green-500/10 transition-all pointer-events-none"></div>
+  <div class="flex flex-col gap-4 relative z-10">
+    <div class="flex items-center gap-3 text-green-400">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-6"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <h3 class="m-0 text-lg font-black uppercase tracking-wider italic">Teacher Account Auto-Generated!</h3>
+    </div>
+    <p class="text-[0.65rem] text-text-dim leading-relaxed m-0 uppercase tracking-widest font-black italic">
+      A secure system account has been initialized for <b>{{ new_creds.name }}</b>. Please share these credentials to log in:
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+      <div class="p-4 bg-white/5 rounded-xl border border-white/5 flex flex-col gap-1">
+        <span class="text-[0.55rem] text-green-400 font-black uppercase tracking-widest italic">Username (Email)</span>
+        <span class="text-sm font-black text-text-main font-mono select-all">{{ new_creds.email }}</span>
+      </div>
+      <div class="p-4 bg-white/5 rounded-xl border border-white/5 flex flex-col gap-1">
+        <span class="text-[0.55rem] text-green-400 font-black uppercase tracking-widest italic">Generated Password</span>
+        <span class="text-sm font-black text-text-main font-mono select-all">{{ new_creds.password }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div
+ class="card flex flex-wrap justify-between items-center mb-10 border-l-4 border-primary p-8 relative overflow-hidden group">
+ <div
+ class="absolute -right-4 -top-4 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all pointer-events-none">
+ </div>
+ <div class="relative z-10 flex gap-6 items-center">
+ <div
+ class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-[0_0_20px_rgba(0,123,255,0.2)] border border-primary/20 transition-all group-hover:scale-110">
+ <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+ </div>
+ <div>
+ <h3 class="m-0 text-2xl font-black text-text-main uppercase tracking-wider italic">Registered Teachers</h3>
+ <p class="text-text-dim text-[0.7rem] font-black uppercase tracking-widest mt-1 italic">Monitor
+ and manage teacher profiles</p>
+ </div>
+ </div>
+ <a href="/register_teacher"
+ class="relative z-10 btn btn-primary h-16 px-10 rounded-2xl bg-gradient-to-br from-primary to-primary-dark border-none font-black shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all uppercase tracking-[0.2em] italic text-xs">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+ Add Teacher
+ </a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+ <div class="lg:col-span-8 flex flex-col gap-8">
+ <div class="card p-0 overflow-hidden border-t-4 border-primary/30 bg-card-glass">
+ {% if teachers %}
+ <div class="overflow-x-auto text-[0.6rem] sm:text-[0.7rem]">
+ <table class="w-full text-left border-collapse">
+ <thead>
+ <tr class="bg-card-glass border-b border-gray-100">
+ <th class="px-8 py-5 font-black text-text-dim uppercase tracking-[0.3em] italic ">
+ #</th>
+ <th class="px-8 py-5 font-black text-text-dim uppercase tracking-[0.3em] italic ">
+ Teacher</th>
+ <th class="px-8 py-5 font-black text-text-dim uppercase tracking-[0.3em] italic ">
+ Subject</th>
+ <th
+ class="px-8 py-5 font-black text-text-dim uppercase tracking-[0.3em] italic text-center">
+ Actions</th>
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-gray-100/80">
+ {% for teacher in teachers %}
+ <tr class="hover:bg-primary/[0.025] transition-all duration-300 group">
+
+ <!-- ID -->
+ <td class="px-8 py-5">
+ <span class="text-primary font-black italic tracking-widest text-[0.65rem]">#{{ teacher[0] }}</span>
+ </td>
+
+ <!-- Photo + Name -->
+ <td class="px-8 py-5">
+ <div class="flex items-center gap-4">
+
+ <!-- Avatar -->
+ {% if teacher[3] and teacher[3] != 'MANUAL_ENTRY' %}
+ <div class="relative shrink-0">
+ <img src="data:image/jpeg;base64,{{ teacher[3] }}"
+ alt="{{ teacher[1] }}"
+ class="w-14 h-14 rounded-2xl object-cover border-2 border-primary/20 shadow-[0_4px_14px_rgba(59,130,246,0.2)] group-hover:border-primary/40 group-hover:shadow-[0_6px_20px_rgba(59,130,246,0.3)] transition-all duration-500">
+ <!-- Online dot -->
+ <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white shadow-sm flex items-center justify-center">
+ <span class="w-1.5 h-1.5 bg-card-glass rounded-full"></span>
+ </span>
+ </div>
+ {% else %}
+ <!-- Initials gradient fallback -->
+ <div class="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-gradient-to-br from-primary/20 to-secondary/20 border border-primary/20 text-primary font-black text-lg uppercase tracking-tight group-hover:from-primary/30 group-hover:to-secondary/30 transition-all duration-500">
+ {{ teacher[1][0] if teacher[1] else '?' }}
+ </div>
+ {% endif %}
+
+ <!-- Name + status -->
+ <div>
+ <div class="font-black text-text-main uppercase tracking-wider italic text-sm group-hover:translate-x-1 transition-transform duration-300">
+ {{ teacher[1] }}
+ </div>
+ {% if teacher[3] and teacher[3] != 'MANUAL_ENTRY' %}
+ <div class="flex items-center gap-1.5 mt-1">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#39ff14" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+ <span class="text-[0.55rem] text-green-600 font-black uppercase tracking-widest">Face Registered</span>
+ </div>
+ {% else %}
+ <div class="flex items-center gap-1.5 mt-1">
+ <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+ <span class="text-[0.55rem] text-text-dim font-black uppercase tracking-widest">No Face Data</span>
+ </div>
+ {% endif %}
+ </div>
+ </div>
+ </td>
+
+ <!-- Subject -->
+ <td class="px-8 py-5">
+ <span
+ class="inline-flex items-center gap-2 px-4 py-1.5 bg-secondary/8 text-secondary border border-secondary/25 rounded-xl font-black uppercase tracking-[0.15em] italic">
+ <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+ {{ teacher[2] }}
+ </span>
+ </td>
+
+ <!-- Actions -->
+ <td class="px-8 py-5">
+ <div class="flex justify-center gap-3">
+ <a href="/edit_teacher/{{ teacher[0] }}"
+ title="Edit Teacher"
+ class="w-10 h-10 flex items-center justify-center rounded-xl border border-border-glass text-text-dim hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all duration-300 group/btn">
+ <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:scale-110 transition-transform"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+ </a>
+ <a href="/delete_teacher/{{ teacher[0] }}"
+ onclick="return confirm('Permanently delete {{ teacher[1] }}? This cannot be undone.')"
+ title="Delete Teacher"
+ class="w-10 h-10 flex items-center justify-center rounded-xl border border-border-glass text-text-dim hover:text-accent hover:border-accent/30 hover:bg-accent/5 transition-all duration-300 group/btn">
+ <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover/btn:scale-110 transition-transform"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+ </a>
+ </div>
+ </td>
+
+ </tr>
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
+ {% else %}
+ <div
+ class="text-center py-32 px-10 border-dashed border-2 border-border-glass m-10 rounded-[40px] bg-card-glass">
+ <div
+ class="w-24 h-24 bg-card-glass rounded-[32px] flex items-center justify-center mx-auto mb-10 text-text-dim border border-border-glass relative">
+ <div class="absolute inset-0 bg-primary/5 blur-2xl rounded-full"></div>
+ <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="relative z-10"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+ </div>
+ <h3 class="mb-4 font-black text-2xl text-text-main italic uppercase tracking-widest">No Teachers Found
+ </h3>
+ <p
+ class="text-text-dim text-[0.7rem] font-black uppercase tracking-[0.25em] mb-12 max-w-sm mx-auto leading-relaxed italic">
+ No active teachers found. Register your first teacher to begin monitoring attendance.
+ </p>
+ <a href="/register_teacher"
+ class="btn btn-primary h-16 px-12 rounded-2xl bg-gradient-to-br from-primary to-primary-dark border-none font-black shadow-xl shadow-primary/20 hover:shadow-primary/40 uppercase tracking-[0.2em] italic text-xs">
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+ Add First Teacher
+ </a>
+ </div>
+ {% endif %}
+ </div>
+ </div>
+
+ <!-- Sidebar Stats -->
+ <div class="lg:col-span-4 flex flex-col gap-8">
+ <div class="card p-8 bg-primary/5 border-l-4 border-primary relative overflow-hidden group">
+ <div
+ class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/20 transition-all">
+ </div>
+ <div class="flex gap-4 items-center mb-8 relative z-10">
+ <div
+ class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary border border-primary/20 shadow-lg shadow-primary/5">
+ <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+ </div>
+ <h4 class="font-black text-[0.7rem] uppercase tracking-[0.3em] text-text-main italic ">Data
+ Privacy</h4>
+ </div>
+ <p
+ class="text-[0.75rem] text-text-dim leading-relaxed font-bold italic relative z-10 m-0 uppercase tracking-widest">
+ Teacher face data is stored as encoded image records for recognition and quick profile preview within this secure admin panel.
+ </p>
+ </div>
+
+ <div class="card p-8 bg-accent/5 border-l-4 border-accent relative overflow-hidden group">
+ <div
+ class="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/20 transition-all">
+ </div>
+ <div class="flex gap-4 items-center mb-8 relative z-10">
+ <div
+ class="w-12 h-12 bg-accent/10 rounded-2xl flex items-center justify-center text-accent border border-accent/20 shadow-lg shadow-accent/5">
+ <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+ </div>
+ <h4 class="font-black text-[0.7rem] uppercase tracking-[0.3em] text-text-main italic ">
+ Deletion Policy</h4>
+ </div>
+ <p
+ class="text-[0.75rem] text-text-dim leading-relaxed font-bold italic relative z-10 m-0 uppercase tracking-widest">
+ Deletion of a teacher's account is absolute. All linked tables, attendance logs, and face patterns will be
+ permanently removed from the database.
+ </p>
+ </div>
+
+ <div class="card p-8 border border-border-glass bg-card-glass group overflow-hidden relative">
+ <div
+ class="absolute bottom-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover: transition-opacity">
+ </div>
+ <h4
+ class="text-[0.65rem] font-black mb-8 flex items-center gap-3 uppercase tracking-[0.25em] text-text-main italic ">
+ <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff007f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+ System Status
+ </h4>
+ <div class="space-y-6 relative z-10">
+ <div class="flex justify-between items-center text-[0.65rem]">
+ <span class="text-text-dim font-black uppercase tracking-widest ">Database</span>
+ <span
+ class="text-success font-black uppercase tracking-widest italic shadow-[0_0_10px_#00ff88]">ONLINE</span>
+ </div>
+ <div class="flex justify-between items-center text-[0.65rem]">
+ <span class="text-text-dim font-black uppercase tracking-widest ">User Limit</span>
+ <span class="text-text-main font-black uppercase tracking-widest italic ">UNLIMITED</span>
+ </div>
+ <div class="h-1.5 bg-card-glass rounded-full overflow-hidden mt-6 border border-border-glass">
+ <div class="h-full bg-primary w-full shadow-[0_0_10px_#007bff] "></div>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>
+{% endblock %}

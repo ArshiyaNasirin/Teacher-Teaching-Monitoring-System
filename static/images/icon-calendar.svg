@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="cal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a78bfa;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#cal-grad)" opacity="0.1" stroke="url(#cal-grad)" stroke-width="2"/>
+  <g transform="translate(32,32)">
+    <rect x="-14" y="-12" width="28" height="20" fill="none" stroke="url(#cal-grad)" stroke-width="2" rx="2"/>
+    <line x1="-14" y1="-4" x2="14" y2="-4" stroke="url(#cal-grad)" stroke-width="2"/>
+    <circle cx="-8" cy="4" r="2" fill="url(#cal-grad)"/>
+    <circle cx="0" cy="4" r="2" fill="url(#cal-grad)" opacity="0.7"/>
+    <circle cx="8" cy="4" r="2" fill="url(#cal-grad)" opacity="0.5"/>
+  </g>
+</svg>
