@@ -25,19 +25,31 @@ import tempfile
 import shutil
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-IS_VERCEL = bool(os.environ.get('VERCEL'))
 
-if IS_VERCEL:
-    temp_dir = tempfile.gettempdir()
-    DB_PATH = os.path.join(temp_dir, 'school_monitoring.db')
-    bundled_db = os.path.join(BASE_DIR, 'school_monitoring.db')
-    if os.path.exists(bundled_db) and not os.path.exists(DB_PATH):
-        try:
-            shutil.copy2(bundled_db, DB_PATH)
-        except Exception as e:
-            print("Error copying bundled db:", e)
-else:
-    DB_PATH = os.path.join(BASE_DIR, 'school_monitoring.db')
+def get_writable_db_path():
+    # If running in serverless / read-only cloud environments
+    if os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME') or os.environ.get('LAMBDA_TASK_ROOT'):
+        return os.path.join(tempfile.gettempdir(), 'school_monitoring.db')
+    # Check if BASE_DIR is writable
+    try:
+        test_file = os.path.join(BASE_DIR, '.perm_test')
+        with open(test_file, 'w') as f:
+            f.write('1')
+        os.remove(test_file)
+        return os.path.join(BASE_DIR, 'school_monitoring.db')
+    except (OSError, IOError, PermissionError):
+        return os.path.join(tempfile.gettempdir(), 'school_monitoring.db')
+
+DB_PATH = get_writable_db_path()
+IS_VERCEL = bool(os.environ.get('VERCEL') or DB_PATH.startswith(tempfile.gettempdir()))
+
+# Copy bundled DB to writable location if needed
+bundled_db = os.path.join(BASE_DIR, 'school_monitoring.db')
+if DB_PATH != bundled_db and os.path.exists(bundled_db) and not os.path.exists(DB_PATH):
+    try:
+        shutil.copy2(bundled_db, DB_PATH)
+    except Exception as e:
+        print("Error copying bundled db:", e)
 
 app = Flask(__name__)
 app.secret_key = 'face_recognition_system'
@@ -318,14 +330,15 @@ def init_db():
                  status TEXT DEFAULT 'Pending',
                  submission_time TEXT)''')
     
-    # Ensure admin user exists and has correct role
+    # Ensure admin user exists and has correct password and role
     admin_email = "nsdivyaprabha19@gmail.com"
-    c.execute('SELECT id FROM users WHERE username = ?', (admin_email,))
-    if not c.fetchone():
-        hashed_pw = generate_password_hash("admin123", method="pbkdf2:sha256")
+    hashed_pw = generate_password_hash("admin123", method="pbkdf2:sha256")
+    c.execute('SELECT id FROM users WHERE LOWER(username) = ?', (admin_email.lower(),))
+    existing_admin = c.fetchone()
+    if not existing_admin:
         c.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (admin_email, hashed_pw, "admin"))
     else:
-        c.execute('UPDATE users SET role = "admin" WHERE username = ?', (admin_email,))
+        c.execute('UPDATE users SET role = "admin", password = ? WHERE id = ?', (hashed_pw, existing_admin[0]))
         
     conn.commit()
     conn.close()
@@ -580,9 +593,12 @@ def login():
             username = request.form.get('username', '').strip()
             password = request.form.get('password', '')
             
+            # Guarantee database schema and admin account exist
+            init_db()
+            
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
-            c.execute('SELECT id, username, password, role FROM users WHERE username = ?', (username,))
+            c.execute('SELECT id, username, password, role FROM users WHERE LOWER(username) = ?', (username.lower(),))
             user_row = c.fetchone()
             conn.close()
             
