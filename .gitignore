@@ -10,9 +10,8 @@ venv/
 ENV/
 
 # Database
-*.db
 *.sqlite3
-school_monitoring.db
+!school_monitoring.db
 
 # Large model files
 *.yml

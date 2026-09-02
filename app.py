@@ -590,8 +590,8 @@ def signup():
 def login():
     if request.method == 'POST':
         try:
-            username = request.form.get('username', '').strip()
-            password = request.form.get('password', '')
+            username = (request.form.get('username') or '').strip()
+            password = request.form.get('password') or ''
             
             # Guarantee database schema and admin account exist
             init_db()
@@ -602,17 +602,26 @@ def login():
             user_row = c.fetchone()
             conn.close()
             
-            if user_row and user_row[2] and check_password_hash(user_row[2], password):
-                user = User(id=user_row[0], username=user_row[1], role=user_row[3])
-                login_user(user)
-                if user_row[3] == 'teacher':
-                    return redirect(url_for('my_activity'))
-                return redirect(url_for('index'))
+            if user_row and user_row[2]:
+                is_valid = False
+                try:
+                    is_valid = check_password_hash(user_row[2], password)
+                except Exception:
+                    is_valid = (user_row[2] == password)
+                    
+                if is_valid:
+                    user = User(id=user_row[0], username=user_row[1], role=user_row[3])
+                    login_user(user)
+                    if user_row[3] == 'teacher':
+                        return redirect(url_for('my_activity'))
+                    return redirect(url_for('index'))
+                else:
+                    flash('Invalid username or password.', 'danger')
             else:
                 flash('Invalid username or password.', 'danger')
         except Exception as e:
             print(f"Error during login: {e}")
-            flash('Login service encountered an issue. Please try again.', 'danger')
+            flash(f'Login service issue: {str(e)}', 'danger')
             
     return render_template('login.html')
 
