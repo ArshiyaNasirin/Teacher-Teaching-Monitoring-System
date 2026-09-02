@@ -60,13 +60,16 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('SELECT id, username, role FROM users WHERE id = ?', (user_id,))
-    user_row = c.fetchone()
-    conn.close()
-    if user_row:
-        return User(id=user_row[0], username=user_row[1], role=user_row[2])
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('SELECT id, username, role FROM users WHERE id = ?', (user_id,))
+        user_row = c.fetchone()
+        conn.close()
+        if user_row:
+            return User(id=user_row[0], username=user_row[1], role=user_row[2])
+    except Exception as e:
+        print(f"Error in load_user: {e}")
     return None
 
 face_cascade = None
@@ -573,23 +576,27 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute('SELECT id, username, password, role FROM users WHERE username = ?', (username,))
-        user_row = c.fetchone()
-        conn.close()
-        
-        if user_row and check_password_hash(user_row[2], password):
-            user = User(id=user_row[0], username=user_row[1], role=user_row[3])
-            login_user(user)
-            if user_row[3] == 'teacher':
-                return redirect(url_for('my_activity'))
-            return redirect(url_for('index'))
-        else:
-            flash('Invalid username or password.')
+        try:
+            username = request.form.get('username', '').strip()
+            password = request.form.get('password', '')
+            
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            c.execute('SELECT id, username, password, role FROM users WHERE username = ?', (username,))
+            user_row = c.fetchone()
+            conn.close()
+            
+            if user_row and user_row[2] and check_password_hash(user_row[2], password):
+                user = User(id=user_row[0], username=user_row[1], role=user_row[3])
+                login_user(user)
+                if user_row[3] == 'teacher':
+                    return redirect(url_for('my_activity'))
+                return redirect(url_for('index'))
+            else:
+                flash('Invalid username or password.', 'danger')
+        except Exception as e:
+            print(f"Error during login: {e}")
+            flash('Login service encountered an issue. Please try again.', 'danger')
             
     return render_template('login.html')
 
@@ -752,47 +759,55 @@ def index():
     if getattr(current_user, 'role', 'teacher') == 'teacher':
         return redirect(url_for('my_activity'))
     archive_expired_sessions()
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    
-    # 1. Total Teachers
-    c.execute('SELECT COUNT(*) FROM teachers')
-    total_teachers = c.fetchone()[0]
-    
-    # 2. Classes Now (entered today)
-    today = datetime.now().strftime('%Y-%m-%d')
-    c.execute('SELECT COUNT(DISTINCT teacher_id) FROM attendance WHERE date = ?', (today,))
-    active_today = c.fetchone()[0]
-    
-    # 3. Late Alerts Count
-    c.execute('SELECT COUNT(*) FROM ahm_notifications WHERE status = "Unread"')
-    unread_alerts = c.fetchone()[0]
-    
-    # 4. Recent Attendance for the list
-    c.execute('''SELECT t.name, a.entry_time, a.status, a.class_name, te.subject, a.captured_image, a.accuracy
-                 FROM attendance a 
-                 JOIN teachers te ON a.teacher_id = te.id 
-                 JOIN teachers t ON a.teacher_id = t.id
-                 WHERE a.date = ? 
-                 ORDER BY a.entry_time DESC LIMIT 5''', (today,))
-    recent_activity = c.fetchall()
-    
-    # 5. Some mock performance stats for the UI bars
-    # In a real system these would be calculated ratios
-    stats = {
-        'attendance': 92 if total_teachers > 0 else 0,
-        'lessons': 85 if active_today > 0 else 0,
-        'security': 100,
-        'performance': 98
-    }
-    
-    conn.close()
-    return render_template('index.html', 
-                          total_teachers=total_teachers, 
-                          active_today=active_today,
-                          unread_alerts=unread_alerts,
-                          recent_activity=recent_activity,
-                          stats=stats)
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        # 1. Total Teachers
+        c.execute('SELECT COUNT(*) FROM teachers')
+        total_teachers = c.fetchone()[0]
+        
+        # 2. Classes Now (entered today)
+        today = datetime.now().strftime('%Y-%m-%d')
+        c.execute('SELECT COUNT(DISTINCT teacher_id) FROM attendance WHERE date = ?', (today,))
+        active_today = c.fetchone()[0]
+        
+        # 3. Late Alerts Count
+        c.execute('SELECT COUNT(*) FROM ahm_notifications WHERE status = "Unread"')
+        unread_alerts = c.fetchone()[0]
+        
+        # 4. Recent Attendance for the list
+        c.execute('''SELECT t.name, a.entry_time, a.status, a.class_name, te.subject, a.captured_image, a.accuracy
+                     FROM attendance a 
+                     JOIN teachers te ON a.teacher_id = te.id 
+                     JOIN teachers t ON a.teacher_id = t.id
+                     WHERE a.date = ? 
+                     ORDER BY a.entry_time DESC LIMIT 5''', (today,))
+        recent_activity = c.fetchall()
+        
+        # 5. Some mock performance stats for the UI bars
+        stats = {
+            'attendance': 92 if total_teachers > 0 else 0,
+            'lessons': 85 if active_today > 0 else 0,
+            'security': 100,
+            'performance': 98
+        }
+        
+        conn.close()
+        return render_template('index.html', 
+                              total_teachers=total_teachers, 
+                              active_today=active_today,
+                              unread_alerts=unread_alerts,
+                              recent_activity=recent_activity,
+                              stats=stats)
+    except Exception as e:
+        print(f"Error on index page: {e}")
+        return render_template('index.html', 
+                              total_teachers=0, 
+                              active_today=0,
+                              unread_alerts=0,
+                              recent_activity=[],
+                              stats={'attendance': 0, 'lessons': 0, 'security': 100, 'performance': 98})
 
 import random
 import string
