@@ -21,15 +21,18 @@ from reportlab.lib.styles import getSampleStyleSheet
 Request.max_form_memory_size = 100 * 1024 * 1024
 Request.max_content_length = 100 * 1024 * 1024
 
+import tempfile
+import shutil
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IS_VERCEL = bool(os.environ.get('VERCEL'))
 
 if IS_VERCEL:
-    DB_PATH = '/tmp/school_monitoring.db'
+    temp_dir = tempfile.gettempdir()
+    DB_PATH = os.path.join(temp_dir, 'school_monitoring.db')
     bundled_db = os.path.join(BASE_DIR, 'school_monitoring.db')
     if os.path.exists(bundled_db) and not os.path.exists(DB_PATH):
         try:
-            import shutil
             shutil.copy2(bundled_db, DB_PATH)
         except Exception as e:
             print("Error copying bundled db:", e)
@@ -223,11 +226,9 @@ def init_db():
 
     c.execute('SELECT COUNT(*) FROM school_details')
     if c.fetchone()[0] == 0:
-        c.execute(
-            'INSERT INTO school_details (name, latitude, longitude, radius, school_start_time) VALUES (?, ?, ?, ?, ?)',
-            ("Kongu Engineering College", 11.2742, 77.6070, 100.0, "08:30")
-        )
-
+        c.execute('INSERT INTO school_details (name, latitude, longitude, radius, school_start_time, is_registered) VALUES (?, ?, ?, ?, ?, 0)',
+                  ("Kongu Engineering College", 11.2742, 77.6070, 100.0, "08:30", 0))
+                  
     c.execute('''CREATE TABLE IF NOT EXISTS users
                  (id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT, role TEXT DEFAULT 'teacher')''')
                  
@@ -397,11 +398,11 @@ def admin_required(f):
     return decorated_function
 
 if IS_VERCEL:
-    MODEL_YML_PATH = '/tmp/biometric_model.yml'
+    temp_dir = tempfile.gettempdir()
+    MODEL_YML_PATH = os.path.join(temp_dir, 'biometric_model.yml')
     bundled_model = os.path.join(BASE_DIR, 'biometric_model.yml')
     if os.path.exists(bundled_model) and not os.path.exists(MODEL_YML_PATH):
         try:
-            import shutil
             shutil.copy2(bundled_model, MODEL_YML_PATH)
         except Exception as e:
             print("Error copying bundled model:", e)
@@ -505,33 +506,16 @@ def train_model(force_retrain=False):
         print("[TRAIN] No valid face data found. Model reset and cleared from memory.")
     is_model_loaded = True
 
-def initialize_runtime():
-    """Initialize the local database and warm the model only in non-serverless runs.
-    Vercel executes code in short-lived instances, so we avoid expensive startup work
-    there and rely on lazy initialization on first real request handling.
-    """
-    try:
-        init_db()
-    except Exception as e:
-        print("[STARTUP] Database init error:", e)
+# Automatically initialize DB schema on serverless startup (e.g. Vercel)
+try:
+    init_db()
+except Exception as e:
+    print("[STARTUP] Database init error:", e)
 
-    if IS_VERCEL:
-        print("[STARTUP] Skipping biometric model warmup in Vercel serverless mode.")
-        return
-
-    try:
-        train_model()
-    except Exception as e:
-        print("[STARTUP] Model train error:", e)
-
-
-# For local development, initialize once when the module is launched directly.
-# In Vercel, keep the app import lightweight and avoid model warmup at cold start.
-if not IS_VERCEL and __name__ != '__main__':
-    try:
-        initialize_runtime()
-    except Exception as e:
-        print("[STARTUP] Runtime bootstrap error:", e)
+try:
+    train_model()
+except Exception as e:
+    print("[STARTUP] Model train error:", e)
 
 def validate_password_strength(password):
     if len(password) < 8:
@@ -2583,5 +2567,5 @@ def delete_leave(leave_id):
     return redirect(url_for('admin_leaves'))
 
 if __name__ == '__main__':
-    initialize_runtime()
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)

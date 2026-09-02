@@ -21,15 +21,18 @@ from reportlab.lib.styles import getSampleStyleSheet
 Request.max_form_memory_size = 100 * 1024 * 1024
 Request.max_content_length = 100 * 1024 * 1024
 
+import tempfile
+import shutil
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 IS_VERCEL = bool(os.environ.get('VERCEL'))
 
 if IS_VERCEL:
-    DB_PATH = '/tmp/school_monitoring.db'
+    temp_dir = tempfile.gettempdir()
+    DB_PATH = os.path.join(temp_dir, 'school_monitoring.db')
     bundled_db = os.path.join(BASE_DIR, 'school_monitoring.db')
     if os.path.exists(bundled_db) and not os.path.exists(DB_PATH):
         try:
-            import shutil
             shutil.copy2(bundled_db, DB_PATH)
         except Exception as e:
             print("Error copying bundled db:", e)
@@ -395,11 +398,11 @@ def admin_required(f):
     return decorated_function
 
 if IS_VERCEL:
-    MODEL_YML_PATH = '/tmp/biometric_model.yml'
+    temp_dir = tempfile.gettempdir()
+    MODEL_YML_PATH = os.path.join(temp_dir, 'biometric_model.yml')
     bundled_model = os.path.join(BASE_DIR, 'biometric_model.yml')
     if os.path.exists(bundled_model) and not os.path.exists(MODEL_YML_PATH):
         try:
-            import shutil
             shutil.copy2(bundled_model, MODEL_YML_PATH)
         except Exception as e:
             print("Error copying bundled model:", e)
@@ -2564,7 +2567,5 @@ def delete_leave(leave_id):
     return redirect(url_for('admin_leaves'))
 
 if __name__ == '__main__':
-    init_db()
-    import threading
-    threading.Thread(target=train_model, daemon=True).start()
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
